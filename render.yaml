@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: scaleup-ceo-playbook
+    runtime: static
+    plan: free
+    staticPublishPath: ./public
+    buildCommand: ""
+    autoDeployTrigger: commit
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=300

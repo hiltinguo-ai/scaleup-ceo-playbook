@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scaleup CEO Playbook</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f5f6f4; --panel:#ffffff; --ink:#1a2130; --ink-2:#4a5364; --ink-3:#7c8595;
+  --line:#d3d8d6; --line-2:#e6e9e8; --accent:#0f6b6b; --accent-soft:#e0efee; --accent-ink:#0a4f4f;
+  --done:#d9f0dc; --done-ink:#1d5a2a; --here:#c9841a;
+  --p1:#b4541c; --p2:#a8761a; --p3:#2f6f5e; --p4:#1f4f8f;
+  --p1s:#f7e6dc; --p2s:#f6ecd6; --p3s:#dcece7; --p4s:#dde6f3;
+  --shadow:0 1px 2px rgba(20,30,40,.06);
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --cond:"IBM Plex Sans Condensed","IBM Plex Sans","Arial Narrow",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151a21; --panel:#1c222b; --ink:#e8ebee; --ink-2:#b4bcc7; --ink-3:#7f8a98;
+    --line:#35404c; --line-2:#262d37; --accent:#4fb3ae; --accent-soft:#193434; --accent-ink:#8fd6d1;
+    --done:#1b3d24; --done-ink:#9be0a8; --here:#e0a040;
+    --p1:#c9652a; --p2:#c9952e; --p3:#3f9a82; --p4:#3b74bd;
+    --p1s:#3a2418; --p2s:#3a2e14; --p3s:#173029; --p4s:#182a40;
+    --shadow:0 1px 2px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151a21; --panel:#1c222b; --ink:#e8ebee; --ink-2:#b4bcc7; --ink-3:#7f8a98;
+  --line:#35404c; --line-2:#262d37; --accent:#4fb3ae; --accent-soft:#193434; --accent-ink:#8fd6d1;
+  --done:#1b3d24; --done-ink:#9be0a8; --here:#e0a040;
+  --p1:#c9652a; --p2:#c9952e; --p3:#3f9a82; --p4:#3b74bd;
+  --p1s:#3a2418; --p2s:#3a2e14; --p3s:#173029; --p4s:#182a40;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:2px}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.45;margin:0;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1280px;margin:0 auto;padding:24px 28px 110px}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding-bottom:14px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+h1{font-family:var(--cond);font-weight:700;font-size:32px;line-height:1.05;margin:4px 0 6px;letter-spacing:-.01em}
+.lede{color:var(--ink-2);max-width:62ch;margin:0}
+.progress{font-family:var(--mono);font-size:12px;color:var(--ink-2);text-align:right}
+.progress b{font-family:var(--cond);font-size:26px;font-weight:600;color:var(--ink);display:block;line-height:1}
+
+/* ---- spine: the progressive path ---- */
+.spine{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:8px 0 6px;position:relative}
+.spine::before{content:"";position:absolute;left:8%;right:8%;top:34px;border-top:2px solid var(--line);z-index:0}
+.pnode{position:relative;z-index:1;background:transparent;border:0;font:inherit;cursor:pointer;text-align:center;padding:8px 6px 6px;color:var(--ink)}
+.pnode .dot{width:52px;height:52px;border-radius:50%;margin:0 auto;display:grid;place-items:center;font-family:var(--cond);font-weight:700;font-size:18px;color:#fff;border:4px solid var(--bg);box-shadow:0 0 0 2px var(--line)}
+.pnode[data-p="1"] .dot{background:var(--p1)} .pnode[data-p="2"] .dot{background:var(--p2)} .pnode[data-p="3"] .dot{background:var(--p3)} .pnode[data-p="4"] .dot{background:var(--p4)}
+.pnode .t{font-family:var(--cond);font-weight:700;font-size:16px;margin-top:6px}
+.pnode .s{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.pnode .k{font-family:var(--mono);font-size:11px;color:var(--ink-2);margin-top:2px}
+.pnode[aria-pressed="true"] .dot{box-shadow:0 0 0 3px var(--ink)}
+.pnode[aria-pressed="true"] .t{text-decoration:underline;text-underline-offset:4px}
+.pnode .here{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;background:var(--here);color:#1a1200;padding:1px 6px;border-radius:2px;margin-top:4px}
+.pnode:not([data-here]) .here{visibility:hidden}
+.spinectl{display:flex;justify-content:center;gap:14px;align-items:center;font-size:12.5px;color:var(--ink-2);margin-bottom:10px}
+.modenote{text-align:center;font-family:var(--mono);font-size:11px;color:var(--ink-3);margin:-4px 0 10px}
+.modenote[hidden]{display:none}
+.spinectl select,.spinectl button{font:inherit;font-size:12.5px;padding:4px 8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:3px;cursor:pointer}
+
+/* ---- the tree ---- */
+.tree{margin-top:8px;overflow-x:auto;padding:10px 0 20px}
+.branch{display:flex;align-items:center}
+.node{border:1px solid var(--line);background:var(--panel);border-radius:6px;box-shadow:var(--shadow);position:relative;flex:none}
+.node.root{padding:14px 18px;border-width:2px;min-width:200px;max-width:240px}
+.node.root .t{font-family:var(--cond);font-weight:700;font-size:20px;line-height:1.1}
+.node.root .s{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:2px}
+.node.root .d{font-size:12.5px;color:var(--ink-2);margin-top:6px}
+.node.root .trig{font-size:11.5px;color:var(--ink-3);margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)}
+.tree[data-p="1"] .node.root{border-color:var(--p1);background:var(--p1s)}
+.tree[data-p="2"] .node.root{border-color:var(--p2);background:var(--p2s)}
+.tree[data-p="3"] .node.root{border-color:var(--p3);background:var(--p3s)}
+.tree[data-p="4"] .node.root{border-color:var(--p4);background:var(--p4s)}
+.node.theme{padding:0;min-width:190px;max-width:220px}
+.node.theme > button{all:unset;display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;padding:9px 12px;cursor:pointer;box-sizing:border-box;font-family:var(--cond);font-weight:600;font-size:15px}
+.node.theme > button .c{font-family:var(--mono);font-size:11px;color:var(--ink-3);font-weight:400;white-space:nowrap}
+.node.theme > button .c i{font-style:normal;color:var(--done-ink)}
+.node.theme > button::after{content:"›";font-size:18px;color:var(--ink-3);margin-left:2px;transition:transform .15s}
+.branch.open > .node.theme > button::after{transform:rotate(90deg)}
+.node.leaf{padding:0;min-width:220px;max-width:340px}
+.node.leaf > button{all:unset;display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;cursor:pointer;box-sizing:border-box;font-size:13.5px;font-weight:500}
+.node.leaf > button .chk{width:16px;height:16px;border:1.5px solid var(--line);border-radius:4px;flex:none;display:grid;place-items:center;font-size:11px;color:transparent}
+.node.leaf.done{background:var(--done);border-color:var(--done-ink)}
+.node.leaf.done > button .chk{background:var(--done-ink);border-color:var(--done-ink);color:#fff}
+.node.leaf.noted > button::after{content:"✎";font-size:11px;color:var(--ink-3);margin-left:auto}
+.node.leaf .detail{display:none;padding:0 10px 10px;border-top:1px dashed var(--line);margin-top:0}
+.node.leaf.open .detail{display:block}
+.node.leaf .detail p{margin:8px 0 6px;font-size:13px;color:var(--ink-2)}
+.node.leaf .detail .ht{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);display:block;margin-bottom:8px}
+.node.leaf .detail .ctl{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.node.leaf .detail .ctl button{font:inherit;font-size:12px;padding:4px 9px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:3px;cursor:pointer}
+.node.leaf.done .detail .ctl button.mark{background:var(--done-ink);border-color:var(--done-ink);color:#fff}
+.node.leaf .detail textarea{width:100%;font:inherit;font-size:12.5px;padding:5px 7px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:3px;resize:none;min-height:30px;overflow:hidden}
+.node.leaf .detail textarea::placeholder{color:var(--ink-3)}
+.node.leaf .detail textarea:disabled{display:none}
+.kids{display:none;flex-direction:column;position:relative;margin-left:36px}
+.branch.open > .kids{display:flex}
+.kids > .branch{position:relative;padding:4px 0}
+.kids > .branch::before{content:"";position:absolute;left:-36px;top:50%;width:36px;border-top:2px solid var(--line)}
+.kids > .branch::after{content:"";position:absolute;left:-36px;top:0;bottom:0;border-left:2px solid var(--line)}
+.kids > .branch:first-child::after{top:50%}
+.kids > .branch:last-child::after{bottom:50%}
+.kids > .branch:only-child::after{display:none}
+.tree > .branch > .kids{display:flex}
+.tree .empty{color:var(--ink-3);font-size:13px;padding:20px}
+
+/* ---- Robot Brian office hours ---- */
+.rb{position:fixed;right:18px;bottom:18px;z-index:25;display:flex;flex-direction:column;align-items:flex-end;gap:8px;transition:bottom .2s}
+.rb.lift{bottom:66px}
+.rb .card{display:none;width:280px;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:12px 14px;font-size:12.5px;color:var(--ink-2)}
+.rb.open .card{display:block}
+.rb .card .t{font-family:var(--cond);font-weight:700;font-size:16px;color:var(--ink);margin-bottom:4px}
+.rb .card a.go{display:inline-block;margin-top:8px;font-weight:600;color:#fff;background:var(--accent);padding:6px 11px;border-radius:4px;text-decoration:none}
+.rb .card .fine{display:block;margin-top:8px;font-family:var(--mono);font-size:10px;color:var(--ink-3)}
+.rb .fab{font:inherit;display:flex;align-items:center;gap:8px;border:0;cursor:pointer;background:var(--ink);color:var(--bg);padding:9px 14px 9px 10px;border-radius:999px;box-shadow:0 6px 18px rgba(0,0,0,.22);font-weight:600;font-size:13px}
+.rb .fab .av{width:26px;height:26px;border-radius:50%;background:var(--here);color:#1a1200;display:grid;place-items:center;font-family:var(--cond);font-weight:700;font-size:12px}
+.rb .fab .sub{font-family:var(--mono);font-weight:400;font-size:10px;opacity:.75;margin-left:2px}
+@media (prefers-reduced-motion:reduce){.rb{transition:none}}
+
+.savebar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--ink);color:var(--bg);display:flex;gap:14px;align-items:center;padding:10px 24px;transform:translateY(110%);transition:transform .2s}
+.savebar.on{transform:none}
+.savebar .msg{font-family:var(--mono);font-size:12px;flex:1}
+.savebar button{font:inherit;font-weight:600;font-size:13px;padding:7px 14px;border:0;border-radius:3px;cursor:pointer;background:var(--accent);color:#fff}
+.savebar button.ghost{background:transparent;color:var(--bg);border:1px solid rgba(255,255,255,.35)}
+.savebar button:disabled{opacity:.6;cursor:default}
+.toast{position:fixed;bottom:64px;left:50%;transform:translateX(-50%);background:var(--panel);color:var(--ink);border:1px solid var(--line);box-shadow:0 6px 24px rgba(0,0,0,.18);padding:8px 14px;font-size:12.5px;border-radius:3px;z-index:30}
+.toast[hidden]{display:none}
+button:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+footer{margin-top:20px;padding-top:12px;border-top:1px solid var(--line);color:var(--ink-3);font-size:12px;max-width:80ch}
+@media (prefers-reduced-motion:reduce){.savebar,.node.theme > button::after{transition:none}}
+@media (max-width:760px){
+  .spine{grid-template-columns:repeat(2,1fr)}
+  .spine::before{display:none}
+  .node.root{min-width:160px}
+  .node.theme{min-width:150px}
+  .node.leaf{min-width:180px;max-width:260px}
+  .kids{margin-left:20px}
+  .kids > .branch::before{left:-20px;width:20px}
+  .kids > .branch::after{left:-20px}
+}
+</style>
+</head>
+<body>
+
+<script type="application/json" id="state">{"v":3,"phase":1,"lessons":{},"updatedAt":null}</script>
+
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">Master memory · Founder → scaleup CEO</div>
+      <h1>Scaleup CEO Playbook</h1>
+      <p class="lede">Brian Halligan's 68 <b>Halliganisms</b> — from his essay <a href="https://www.linkedin.com/pulse/startup-founder-scaleup-ceos-journey-from-0-25billion-brian-halligan-e1f4e/" target="_blank" rel="noopener">A Startup Founder to Scaleup CEO's Journey from $0 to $25 billion</a> — as a progressive tree. Pick a phase on the path, open a theme, open a lesson. Mark a lesson ✓ once it's part of how we run; add a note if there's something to remember.</p>
+    </div>
+    <div class="progress" id="progress"></div>
+  </header>
+
+  <div class="spine" id="spine"></div>
+  <div class="spinectl">
+    <label>We are at <select id="phaseSel"></select></label>
+    <button id="expandAll">Expand all</button>
+    <button id="collapseAll">Collapse</button>
+  </div>
+  <div class="modenote" id="modeNote" hidden></div>
+
+  <div class="tree" id="tree"></div>
+
+  <footer>Principles are paraphrased from Brian Halligan's "Halliganisms" — <a href="https://www.linkedin.com/pulse/startup-founder-scaleup-ceos-journey-from-0-25billion-brian-halligan-e1f4e/" target="_blank" rel="noopener">read the original essay on LinkedIn</a>; h/t credits are his. Phase mapping, ✓ marks and notes are ours, saved into this page for everyone who can open it.</footer>
+</div>
+
+<div class="rb" id="rb">
+  <div class="card" role="dialog" aria-label="Robot Brian office hours">
+    <div class="t">Robot Brian · office hours</div>
+    Stuck on a lesson? Ask Brian Halligan's AI clone how he'd apply it — it's trained on his writing and talks.
+    <a class="go" href="https://www.delphi.ai/bhalligan" target="_blank" rel="noopener">Open office hours ↗</a>
+    <span class="fine">delphi.ai/bhalligan · opens in a new tab</span>
+  </div>
+  <button class="fab" id="rbBtn" aria-expanded="false"><span class="av">RB</span>Robot Brian<span class="sub">office hours</span></button>
+</div>
+<div class="savebar" id="savebar">
+  <span class="msg" id="savemsg"></span>
+  <button class="ghost" id="discard">Discard</button>
+  <button id="save">Save to page</button>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+const PHASES=[
+ {p:1,name:"Founding",size:"< 10 people",desc:"Survive and find the wedge. Founders do everything.",trig:"Ends when you hire your first managers."},
+ {p:2,name:"First team",size:"10 – 50",desc:"Turn the founders' habits into a team's habits.",trig:"Ends when a second management layer starts forming."},
+ {p:3,name:"Pre-scale",size:"50 – 150",desc:"Build the machine before Dunbar's number breaks it.",trig:"Ends when the founder no longer knows everyone."},
+ {p:4,name:"Scaleup",size:"150 +",desc:"Inspiration over perspiration. Run it, don't do it.",trig:"Ends when you hand over the keys."}
+];
+const THEMES=[
+ {id:"leading",name:"Leading"},{id:"culture",name:"Culture"},{id:"team",name:"Team"},{id:"strategy",name:"Strategy"},
+ {id:"decisions",name:"Deciding"},{id:"crisis",name:"Crisis"},{id:"craft",name:"CEO craft"},
+ {id:"comms",name:"Communicating"},{id:"self",name:"Yourself"},{id:"exits",name:"Exits"},{id:"planning",name:"Planning"},{id:"stepping",name:"Stepping away"}
+];
+const L=[
+ {s:"leading",n:"Perspiration vs inspiration",p:"Startup CEO: 90% perspiration, 10% inspiration. Scaleup CEO: the reverse. What worked in startup mode won't carry over — you have to evolve.",ph:3},
+ {s:"leading",n:"Two forward, one back",p:"From outside, growth looks smooth up-and-to-the-right. Inside it is two steps forward, one step back, on repeat. There was never a silver-bullet hire, customer, partner or investor. It's a grind.",ph:1},
+ {s:"leading",n:"Constructive dissatisfaction",p:"Operate in a perpetual state of constructive dissatisfaction — a board member's description of Halligan, and one he liked.",ph:1,ht:"Lorrie Norrington"},
+ {s:"leading",n:"Manage the trust battery",p:"You start fully charged. Wrong calls drain it, and your moral authority with it. You get a few 'CEO cards' for bold bets the team disagrees with — not 52.",ph:2},
+ {s:"leading",n:"Head in the sky, feet on the ground",p:"Paint a compelling future while confronting today's real problems head-on. Telling investors to ignore this quarter's numbers ends badly.",ph:1,ht:"Teddy Roosevelt"},
+ {s:"leading",n:"Wartime vs peacetime",p:"Peacetime: decisions bubble up and are made deliberately. Wartime: top-down and fast. Know which mode you're in, and which one you thrive in. Halligan thrived in wartime.",ph:2,ht:"Ben Horowitz; cf. Paul Graham's 'founder mode'"},
+ {s:"culture",n:"EV > TV > MeV",p:"Everyone should optimize enterprise value over their team's value over their own value. Left unwatched, leaders optimize for their team — usually at another team's expense. #ScalesTax",ph:3},
+ {s:"culture",n:"Culture is your second product",p:"One product is sold to customers, the other to employees. Like the product, culture must be unique and valuable to attract and retain talent — and it is never finished.",ph:2},
+ {s:"culture",n:"Customer, employee, or investor centric",p:"Every company is one of the three, and it comes from the CEO. HubSpot talked customer-centric but acted employee-centric for ~8 years; it shifted deliberately via management-meeting agendas, NPS in the bonus plan, and moving P&L spend from S&M to R&D.",ph:2},
+ {s:"culture",n:"Mercenary-to-missionary ratio",p:"Early hires are missionaries; with scale, more mercenaries arrive. You can delay the shift, but not stop it — plenty of companies scaled fine with a mix. #ScalesTax",ph:3},
+ {s:"culture",n:"Risk aversion grows with scale",p:"Early hires are risk-seeking because there's nothing to protect. As employees' net worth rises and the brand matters on LinkedIn, the org protects what it has. A preternaturally risk-seeking cofounder is a useful counterweight.",ph:4},
+ {s:"culture",n:"Culture breaks at ~150 (Dunbar)",p:"Nearly every company's culture breaks around 150 people: missionary ratio drops, risk aversion rises, the founder no longer interviews everyone, a new management layer appears. Getting through it intact is the startup→scaleup threshold.",ph:3},
+ {s:"culture",n:"Titles and org charts",p:"Tried an 'influence chart' instead of the org chart (it put Brad Coffey, not the CEO, at the center) and tried killing titles. Massive pushback. Not a hill worth dying on.",ph:3},
+ {s:"team",n:"Times change, teams change",p:"HubSpot is on its third or fourth management team; each was right for its stage and people self-select for stage. Don't agonize over replacing leaders as you grow — company and leader are usually both better off.",ph:3},
+ {s:"team",n:"Recruit from a few years ahead",p:"Execs and board members from companies a few steps ahead of you work. Hires from companies orders of magnitude larger (Microsoft, Google) suffer an impedance mismatch.",ph:2},
+ {s:"team",n:"A truly independent board member",p:"Worth her weight in gold: she has already seen the movie and counterbalances the VCs. Source her yourself, not from a VC's circle.",ph:2},
+ {s:"team",n:"Home-grown talent is underrated",p:"The post-round VC playbook says 'uplevel' the home-grown leaders. Sometimes right, usually over-indexed — Apple, Nvidia and Amazon exec teams are full of long-tenured people.",ph:3},
+ {s:"team",n:"Build like the 2004 Red Sox",p:"Mostly home-grown talent plus a couple of well-placed veterans (Pedro, Schilling, Ortiz) to put you over the top.",ph:3},
+ {s:"team",n:"You can't teach smart",p:"'You can't teach 7 feet.' Raw brainpower is valuable on its own. Aim to be the dumbest person at the management table.",ph:1,ht:"Tommy Heinsohn"},
+ {s:"team",n:"Complements, not compliments",p:"100 calories into a strength returns 1,000; into a weakness, 101. Stop fixing weaknesses; hire people who plug them. Don't hire in your own image.",ph:1},
+ {s:"team",n:"It was mostly product and sales",p:"In scaleup mode the CEO's time went to product and sales; legal and finance got little attention, which cost some good people.",ph:3},
+ {s:"team",n:"5:1 praise ratio is bull-shiitake",p:"Five compliments per criticism, and the feedback sandwich, didn't match lived experience. Everyone knows the game.",ph:1},
+ {s:"team",n:"Jensen is mostly right",p:"Early HubSpot: big, infrequent (monthly) meetings, no weekly 1:1s, praise and criticism in public. Later: closed weekly meetings, 1:1s, no public criticism. Nvidia suggests the early way wasn't crazy.",ph:1,ht:"Jensen Huang"},
+ {s:"team",n:"Taste > analytics",p:"Nearly everyone has good analytical skills now. Vanishingly few have taste. Find them and give them power.",ph:2},
+ {s:"team",n:"Exec hires stick ~60% of the time",p:"About 40% of senior hires churn within 18 months. Senior candidates interview well; interviewers overrate themselves. Shrink the panel; hire for 4/4 strengths with some 2/4 weaknesses over all-3/4 candidates. Don't sweat a whiff or two.",ph:3},
+ {s:"team",n:"You need glue people to scale",p:"As you grow, leverage shifts from stars (top reps and leaders) to quiet ops wizards who know how the machine works and which knobs not to break.",ph:3,ht:"Ravi Gupta, Sequoia"},
+ {s:"strategy",n:"Watch the competition, never follow it",p:"Watched Salesforce very carefully; refused to follow it. Ingrained in HubSpot's DNA.",ph:1,ht:"Arnoldo Hax, MIT Sloan"},
+ {s:"strategy",n:"Zag when everyone zigs",p:"Be right about something everyone thinks you're wrong about, for a long time. HubSpot's three zags: stay SMB (more M than S); go from marketing app to CRM platform; build the CRM in-house instead of acquiring.",ph:1,ht:"Peter Thiel, Zero to One"},
+ {s:"strategy",n:"Don't trash talk",p:"Respect strong competitors the way tennis finalists do. Salesforce is very good; nothing good comes from poking the bear.",ph:1,ht:"Dharmesh Shah"},
+ {s:"strategy",n:"Category creation is harder than it looks",p:"'Inbound marketing' took a zillion blog posts, speeches, a book and a conference — more energy than marketing the product. Re-runs failed: inbound sales, CMR, COS. It was lightning in a bottle.",ph:2},
+ {s:"strategy",n:"Become a platform or be eaten by one",p:"'Salesforce is to sales as HubSpot is to marketing' — until Salesforce bought ExactTarget, Pardot, Radian6 and Buddy Media. HubSpot pivoted to a CRM platform rather than be eaten. Very good call in hindsight.",ph:3,ht:"Steve Fredette, Toast"},
+ {s:"decisions",n:"Compromise is the enemy of greatness",p:"Surrounded by smart people with good arguments on both sides, the first-time CEO crafts an uninspired compromise. Kiss of death. Break the tie; let arguments have winners and losers.",ph:2,ht:"Brad Coffey"},
+ {s:"decisions",n:"Wear the NO shirt",p:"Money in the bank led to saying yes to everything, which led to lost focus, shoddy execution and budget problems. He wore a literal 'NO' shirt to management meetings until the point landed.",ph:2},
+ {s:"decisions",n:"Two people watering one plant",p:"Every project with multiple owners went sideways. One DRI, always.",ph:1},
+ {s:"decisions",n:"Sometimes doing nothing is right",p:"Bias to action is mostly good, but when the team is short-staffed and swamped, sit on your hands and let people grind. He jerked the steering wheel too much.",ph:2},
+ {s:"decisions",n:"Avoid the tyranny of Or",p:"Push back on fast-or-good-or-cheap framing. Surprisingly, it sometimes works.",ph:2,ht:"George Hu"},
+ {s:"decisions",n:"Nap on it",p:"Decision fatigue is real. A 20-minute nap lets the brain sweep and file; clarity often follows.",ph:1},
+ {s:"decisions",n:"Get to the coal face",p:"The bigger the org, the further the CEO drifts from front-line staff and customers. Skip levels to hear reps directly; run customer panels at management and board meetings. 'This was smart.'",ph:3,ht:"David Skok"},
+ {s:"crisis",n:"Never waste a good crisis",p:"Name the crisis out loud and use it to change. A last-day-of-Q1 outage in 2019 overhauled how product was built and pushed the culture customer-centric; Covid gave cover for wholesale business-model changes.",ph:1},
+ {s:"crisis",n:"Don't nibble the shit sandwich",p:"Spinning employees, customers or partners backfires — people are smart and watching closely. Take the giant bite now.",ph:1,ht:"Ruth Porat"},
+ {s:"crisis",n:"Next play",p:"Don't compound a missed shot with a dumb risk to make up for it. After unforced errors — including your own — move the company on.",ph:1,ht:"Coach K"},
+ {s:"craft",n:"Annual 360 via NPS",p:"Cofounder surveys ~25 people up and down the org: 'How likely are you to recommend Brian as CEO?' and 'Why?' Themes with backing quotes go into a ~20-page doc — ten pages of features, ten of bugs — shared with company and board along with his own performance plan.",ph:2,ht:"Dharmesh Shah"},
+ {s:"craft",n:"Your strength becomes your weakness",p:"Starting up is doing as many jobs as possible to survive. Scaling is shedding as many as possible to survive. Even founder-mode CEOs delegate the non-core.",ph:2,ht:"Aaron Levie"},
+ {s:"craft",n:"CEO groups",p:"An early-stage group (Colin Angle of iRobot was a major influence) and later a public-company group (Slack, Atlassian, Shopify). Half misery-loves-company, half best practices — everyone's problems rhyme.",ph:1},
+ {s:"craft",n:"A CEO coach",p:"The board 'strongly suggested' one. Half coach, half psychologist. Needed both.",ph:3},
+ {s:"comms",n:"Truth-telling vs cheerleading",p:"Pure cheerleaders skip the details; he over-indexed on truth-telling and it wore on people. Check yourself periodically.",ph:1},
+ {s:"comms",n:"Transparency builds trust",p:"Very transparent with employees, customers, partners and investors. New execs were uncomfortable at first. It filled the trust battery in innumerable ways.",ph:1},
+ {s:"comms",n:"10,000 times, not 10,000 hours",p:"Benioff must have told the cloud story 10,000 times. Keep telling yours well past the point you're bored of it.",ph:1,ht:"Marc Benioff"},
+ {s:"comms",n:"Presentation to presentation",p:"Always working on the next deck: customer pitch, company meeting, board, conference. Always.",ph:1},
+ {s:"comms",n:"You're watched 10× more closely than you think",p:"People quote hallway remarks from a decade ago. Words and body language are a superpower or kryptonite.",ph:2},
+ {s:"comms",n:"Absorb complexity, pass down clarity",p:"There is always fog inside the company. The leader's job is to clear it.",ph:2,ht:"JD Sherman"},
+ {s:"self",n:"Balance never happened",p:"Chose the job over balance, never took a real vacation. Fell short on some personal goals, far exceeded professional ones. No regrets.",ph:1},
+ {s:"self",n:"Work can be a lot of fun",p:"Serious meetings with constant levity, especially when things went sideways. Most board rooms today have too few laughs.",ph:1},
+ {s:"self",n:"Be yourself; everyone else is taken",p:"Tried to imitate other CEOs for years. Confidence eventually allowed authenticity, quirks and all.",ph:1,ht:"Oscar Wilde"},
+ {s:"self",n:"Imposter syndrome doesn't go away",p:"Still there while writing the essay. If you have it, you're not alone.",ph:1},
+ {s:"self",n:"Take a slice of the pizza along the way",p:"Selling some common in the Series D (to Sequoia) stiffened his backbone against acquisition interest and aligned him with investors. Financially one of his worst decisions; no regrets.",ph:4},
+ {s:"exits",n:"No acquisition offers came",p:"Not every scaleup gets offers — HubSpot didn't. A good price from a dream acquirer is unlikely, more so under today's regulation. Build something your grandkids will be proud of.",ph:4},
+ {s:"exits",n:"The IPO is the starting line",p:"Repeated hundreds of times pre-IPO. Never discussed the stock price and asked others to stop — it drives people bonkers.",ph:4},
+ {s:"exits",n:"Going public is underrated",p:"Pre-IPO liquidity dulls the allure, but the joy of IPO day and the party after are underestimated.",ph:4},
+ {s:"planning",n:"Align the vectors",p:"Each employee is a vector with strength and direction. In most companies they point everywhere. The scaleup CEO's top job: hire strong vectors and point them the same way.",ph:2,ht:"Elon Musk, at a Sequoia event"},
+ {s:"planning",n:"MSPOT — one planning doc",p:"Mission, Strategy, Projects, Omissions, Tracking. Forces the team to argue to agreement on a few priorities and how to measure them, and shelves everyone's pet rocks until the next cycle. HubSpot 2012: mission 'Transform marketing into something people love'; strategy 'grow through retention'; omissions Enterprise, International, CRM.",ph:1},
+ {s:"planning",n:"Planning seasons",p:"Apr–Jun long-range strategy; Jul–Sep turn it into next year's plan; Oct–Dec budgets; Jan–Mar heads-down on Q1. In hindsight he'd run it twice a year — the earth-sun cycle doesn't match the earth-technology cycle.",ph:2},
+ {s:"planning",n:"Complexity kills",p:"Complexity creeps in like gravity — HR policy, comp plans, pricing. Fight it tooth and nail. #ScalesTax",ph:3},
+ {s:"planning",n:"More people, less gets done",p:"The annual priority list got shorter as the company got bigger. Learn to be okay with it; get the big things right.",ph:3},
+ {s:"stepping",n:"Know when to hand over the keys",p:"A 2021 accident forced introspection: the joy was gone and the $2B→$10B phase didn't suit his skills. Six months later he became chair. Most founders wait too long.",ph:4},
+ {s:"stepping",n:"Pick your successor carefully",p:"Yamini Rangan: promoted from within after working together; came from Dropbox and Workday (a few steps ahead); ran the company well during his medical leave.",ph:4},
+ {s:"stepping",n:"Chairpeople don't drive",p:"Let go of the wheel. Chair and board are grandparents; the CEO is the parent. Failure case: Schultz going back in at Starbucks.",ph:4},
+ {s:"stepping",n:"Being CEO is overrated",p:"You work for everyone — customers, partners, employees, investors — and are on call to all of them. Be careful what you wish for.",ph:1}
+];
+L.forEach((x,i)=>{x.id="h"+String(i+1).padStart(2,"0")});
+
+// ---------- state ----------
+const stateEl=document.getElementById("state");
+let saved=migrate(JSON.parse(stateEl.textContent));
+let state=JSON.parse(JSON.stringify(saved));
+let dirty=new Set(); let canWrite=true; let artifactNS=null; let mode="team";
+const LS="scp-personal-v3";
+function migrate(s){
+  if(s.v===3)return s;
+  const out={v:3,phase:s.phase||1,lessons:{},updatedAt:s.updatedAt||null};
+  for(const [id,v] of Object.entries(s.lessons||{})){
+    const done=v.status==="embed"||(v.exe!=null&&v.exe>=4);
+    const note=v.evidence||v.note||"";
+    if(done||note) out.lessons[id]={done,note};
+  }
+  return out;
+}
+const get=id=>state.lessons[id]||{done:false,note:""};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+let viewPhase=state.phase;
+const openThemes=new Set(); const openLeaves=new Set();
+
+// ---------- render ----------
+function render(){ renderSpine(); renderTree(); renderProgress(); }
+function renderSpine(){
+  let h="";
+  for(const P of PHASES){
+    const items=L.filter(x=>x.ph===P.p), d=items.filter(x=>get(x.id).done).length;
+    h+=`<button class="pnode" data-p="${P.p}" ${state.phase===P.p?'data-here="1"':""} aria-pressed="${viewPhase===P.p?"true":"false"}">
+      <div class="dot">P${P.p}</div><div class="t">${esc(P.name)}</div><div class="s">${P.size}</div><div class="k">${d}/${items.length} ✓</div><span class="here">We are here</span></button>`;
+  }
+  $("#spine").innerHTML=h;
+  $("#phaseSel").innerHTML=PHASES.map(P=>`<option value="${P.p}" ${state.phase===P.p?"selected":""}>P${P.p} · ${esc(P.name)} (${P.size})</option>`).join("");
+  $("#phaseSel").disabled=!canWrite;
+}
+function leafHTML(x){
+  const v=get(x.id), open=openLeaves.has(x.id);
+  return `<div class="branch"><div class="node leaf ${v.done?"done":""} ${v.note?"noted":""} ${open?"open":""}" data-id="${x.id}">
+    <button data-act="leaf"><span class="chk">✓</span><span>${esc(x.n)}</span></button>
+    <div class="detail"><p>${esc(x.p)}</p>${x.ht?`<span class="ht">h/t ${esc(x.ht)}</span>`:""}
+      ${canWrite?`<div class="ctl"><button class="mark" data-act="mark">${v.done?"✓ Part of how we run":"Mark as part of how we run"}</button></div>`:(v.done?`<div class="ctl"><span style="font-size:12px;color:var(--done-ink)">✓ Part of how we run</span></div>`:"")}
+      <textarea rows="1" data-act="note" placeholder="Note for us…" ${canWrite?"":"disabled"}>${esc(v.note)}</textarea>${!canWrite&&v.note?`<p style="margin:0;font-size:12.5px">${esc(v.note)}</p>`:""}
+    </div></div></div>`;
+}
+function renderTree(){
+  const P=PHASES.find(p=>p.p===viewPhase);
+  const items=L.filter(x=>x.ph===P.p);
+  let kids="";
+  for(const T of THEMES){
+    const ti=items.filter(x=>x.s===T.id); if(!ti.length)continue;
+    const d=ti.filter(x=>get(x.id).done).length, key=P.p+":"+T.id;
+    kids+=`<div class="branch ${openThemes.has(key)?"open":""}" data-theme="${key}"><div class="node theme"><button data-act="theme"><span>${esc(T.name)}</span><span class="c"><i>${d}✓</i> / ${ti.length}</span></button></div>
+      <div class="kids">${ti.map(leafHTML).join("")}</div></div>`;
+  }
+  const tree=$("#tree"); tree.dataset.p=P.p;
+  tree.innerHTML=`<div class="branch open"><div class="node root"><div class="t">P${P.p} · ${esc(P.name)}</div><div class="s">${P.size} · ${items.length} lessons</div><div class="d">${esc(P.desc)}</div><div class="trig">${esc(P.trig)}</div></div><div class="kids">${kids}</div></div>`;
+  tree.querySelectorAll("textarea").forEach(autosize);
+}
+function renderProgress(){
+  const d=L.filter(x=>get(x.id).done).length;
+  const when=state.updatedAt?new Date(state.updatedAt).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}):"never";
+  $("#progress").innerHTML=`<b>${d}<span style="font-size:14px;color:var(--ink-3)"> / ${L.length}</span></b>part of how we run<br>${mode==="personal"?"saved in this browser":"last saved "+esc(when)}`;
+}
+
+// ---------- interaction ----------
+$("#spine").addEventListener("click",e=>{const b=e.target.closest(".pnode");if(!b)return;viewPhase=+b.dataset.p;render()});
+$("#phaseSel").addEventListener("change",e=>{state.phase=+e.target.value;viewPhase=state.phase;markDirty("phase");render()});
+$("#expandAll").addEventListener("click",()=>{L.filter(x=>x.ph===viewPhase).forEach(x=>openThemes.add(viewPhase+":"+x.s));renderTree()});
+$("#collapseAll").addEventListener("click",()=>{[...openThemes].filter(k=>k.startsWith(viewPhase+":")).forEach(k=>openThemes.delete(k));openLeaves.clear();renderTree()});
+$("#tree").addEventListener("click",e=>{
+  const b=e.target.closest("[data-act]");if(!b)return;
+  const act=b.dataset.act;
+  if(act==="theme"){const br=b.closest(".branch");const k=br.dataset.theme;openThemes.has(k)?openThemes.delete(k):openThemes.add(k);br.classList.toggle("open");return}
+  const leaf=b.closest(".node.leaf"), id=leaf.dataset.id;
+  if(act==="leaf"){openLeaves.has(id)?openLeaves.delete(id):openLeaves.add(id);leaf.classList.toggle("open");leaf.querySelectorAll("textarea").forEach(autosize);return}
+  if(act==="mark"&&canWrite){const v=get(id);state.lessons[id]={done:!v.done,note:v.note||""};markDirty(id);renderSpine();renderTree();renderProgress()}
+});
+$("#tree").addEventListener("input",e=>{
+  const t=e.target;if(t.dataset.act!=="note")return;autosize(t);
+  const id=t.closest(".node.leaf").dataset.id, v=get(id);
+  state.lessons[id]={done:v.done,note:t.value};t.closest(".node.leaf").classList.toggle("noted",!!t.value.trim());markDirty(id);
+});
+function autosize(t){t.style.height="auto";t.style.height=(t.scrollHeight+2)+"px"}
+function markDirty(k){
+  if(mode==="personal"){try{localStorage.setItem(LS,JSON.stringify({phase:state.phase,lessons:state.lessons,at:new Date().toISOString()}))}catch(e){} renderProgress();return}
+  dirty.add(k);updateSavebar()}
+function enterPersonal(){
+  mode="personal";canWrite=true;dirty.clear();updateSavebar();
+  try{const p=JSON.parse(localStorage.getItem(LS)||"null");if(p){if(p.phase)state.phase=p.phase;Object.assign(state.lessons,p.lessons||{});state.updatedAt=p.at||state.updatedAt}}catch(e){}
+  const n=$("#modeNote");n.textContent="Personal copy — your ✓ marks, notes and phase are saved in this browser only.";n.hidden=false;
+  render();
+}
+function updateSavebar(){const n=dirty.size;$("#savebar").classList.toggle("on",n>0);$("#rb").classList.toggle("lift",n>0);$("#savemsg").textContent=n?`${n} unsaved change${n>1?"s":""} — saving publishes a new version for everyone`:""}
+$("#rbBtn").addEventListener("click",()=>{const o=$("#rb").classList.toggle("open");$("#rbBtn").setAttribute("aria-expanded",o)});
+$("#discard").addEventListener("click",()=>{state=JSON.parse(JSON.stringify(saved));dirty.clear();updateSavebar();render()});
+$("#save").addEventListener("click",save);
+
+function buildHTML(){
+  const clone=document.documentElement.cloneNode(true);
+  ["#tree","#spine","#progress","#phaseSel"].forEach(s=>{const el=clone.querySelector(s);if(el)el.innerHTML=""});
+  clone.querySelector("#savebar").classList.remove("on"); clone.querySelector("#toast").hidden=true; clone.querySelector("#rb").classList.remove("open","lift"); const mn=clone.querySelector("#modeNote"); mn.hidden=true; mn.textContent="";
+  const out={v:3,phase:state.phase,lessons:{},updatedAt:new Date().toISOString()};
+  for(const [id,v] of Object.entries(state.lessons)){const note=(v.note||"").trim(); if(v.done||note) out.lessons[id]={done:!!v.done,note}}
+  clone.querySelector("#state").textContent=JSON.stringify(out).replace(/</g,"\\u003c");
+  return "<!doctype html>\n"+clone.outerHTML;
+}
+async function save(){
+  if(!artifactNS){toast("Saving isn't available in this view.");return}
+  const btn=$("#save");btn.disabled=true;btn.textContent="Saving…";
+  try{ await artifactNS.publish(buildHTML()); }
+  catch(err){
+    btn.disabled=false;btn.textContent="Save to page";
+    const code=err&&err.code;
+    if(code==="conflict")toast("Someone else saved first — reloading to the latest version.");
+    else if(code==="not_writer"||code==="not_granted"){toast("You can't edit the shared page — switching to your personal copy.");enterPersonal()}
+    else if(code==="rate_limited")toast("Saving too often — wait a moment and try again.");
+    else toast("Couldn't save: "+(err&&err.message||code||"unknown error"));
+  }
+}
+let toastT; function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{t.hidden=true},4000)}
+
+// open the first theme so the tree isn't bare
+(function(){const first=L.find(x=>x.ph===viewPhase);if(first)openThemes.add(viewPhase+":"+first.s)})();
+render();
+(async()=>{
+  try{ if(window.claude&&typeof window.claude.use==="function") artifactNS=await window.claude.use("artifact"); }catch(e){artifactNS=null}
+  if(!artifactNS)enterPersonal();
+})();
+})();
+</script>
+
+</body>
+</html>
