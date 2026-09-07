@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Scaleup CEO Playbook</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700&display=swap">
 <style>
 :root{
   --bg:#f5f6f4; --panel:#ffffff; --ink:#1a2130; --ink-2:#4a5364; --ink-3:#7c8595;
@@ -14,7 +14,7 @@
   --p1s:#f7e6dc; --p2s:#f6ecd6; --p3s:#dcece7; --p4s:#dde6f3;
   --shadow:0 1px 2px rgba(20,30,40,.06);
   --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
-  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --sans:"IBM Plex Sans","Noto Sans SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",sans-serif;
   --cond:"IBM Plex Sans Condensed","IBM Plex Sans","Arial Narrow",system-ui,sans-serif;
 }
 @media (prefers-color-scheme: dark){
@@ -133,6 +133,14 @@ h1{font-family:var(--cond);font-weight:700;font-size:32px;line-height:1.05;margi
 .toast[hidden]{display:none}
 button:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 footer{margin-top:20px;padding-top:12px;border-top:1px solid var(--line);color:var(--ink-3);font-size:12px;max-width:80ch}
+html[lang="zh"]{font-size:15px}
+html[lang="zh"] h1,html[lang="zh"] .pnode .t,html[lang="zh"] .node.root .t,html[lang="zh"] .node.theme > button,html[lang="zh"] .rb .card .t{font-family:"Noto Sans SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",var(--sans)}
+html[lang="zh"] .node.leaf{min-width:240px;max-width:380px}
+.spinectl .lang{display:inline-flex;gap:0}
+.spinectl .lang button{border-radius:0}
+.spinectl .lang button:first-child{border-radius:3px 0 0 3px}
+.spinectl .lang button:last-child{border-radius:0 3px 3px 0;margin-left:-1px}
+.spinectl .lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 @media (prefers-reduced-motion:reduce){.savebar,.node.theme > button::after{transition:none}}
 @media (max-width:760px){
   .spine{grid-template-columns:repeat(2,1fr)}
@@ -153,34 +161,38 @@ footer{margin-top:20px;padding-top:12px;border-top:1px solid var(--line);color:v
 <div class="wrap">
   <header>
     <div>
-      <div class="eyebrow">Master memory · Founder → scaleup CEO</div>
-      <h1>Scaleup CEO Playbook</h1>
-      <p class="lede">Brian Halligan's 68 <b>Halliganisms</b> — from his essay <a href="https://www.linkedin.com/pulse/startup-founder-scaleup-ceos-journey-from-0-25billion-brian-halligan-e1f4e/" target="_blank" rel="noopener">A Startup Founder to Scaleup CEO's Journey from $0 to $25 billion</a> — as a progressive tree. Pick a phase on the path, open a theme, open a lesson. Mark a lesson ✓ once it's part of how we run; add a note if there's something to remember.</p>
+      <div class="eyebrow" id="eyebrow"></div>
+      <h1 id="htitle"></h1>
+      <p class="lede" id="lede"></p>
     </div>
     <div class="progress" id="progress"></div>
   </header>
 
   <div class="spine" id="spine"></div>
   <div class="spinectl">
-    <label>We are at <select id="phaseSel"></select></label>
+    <label id="phaseLab">We are at <select id="phaseSel"></select></label>
     <button id="expandAll">Expand all</button>
     <button id="collapseAll">Collapse</button>
+    <span class="lang" role="group" aria-label="Language">
+      <button type="button" id="langEn" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" id="langZh" data-lang="zh" aria-pressed="false">中文</button>
+    </span>
   </div>
   <div class="modenote" id="modeNote" hidden></div>
 
   <div class="tree" id="tree"></div>
 
-  <footer>Principles are paraphrased from Brian Halligan's "Halliganisms" — <a href="https://www.linkedin.com/pulse/startup-founder-scaleup-ceos-journey-from-0-25billion-brian-halligan-e1f4e/" target="_blank" rel="noopener">read the original essay on LinkedIn</a>; h/t credits are his. Phase mapping, ✓ marks and notes are ours, saved into this page for everyone who can open it.</footer>
+  <footer id="foot"></footer>
 </div>
 
 <div class="rb" id="rb">
-  <div class="card" role="dialog" aria-label="Robot Brian office hours">
-    <div class="t">Robot Brian · office hours</div>
-    Stuck on a lesson? Ask Brian Halligan's AI clone how he'd apply it — it's trained on his writing and talks.
-    <a class="go" href="https://www.delphi.ai/bhalligan" target="_blank" rel="noopener">Open office hours ↗</a>
-    <span class="fine">delphi.ai/bhalligan · opens in a new tab</span>
+  <div class="card" role="dialog" id="rbCard" aria-label="Robot Brian office hours">
+    <div class="t" id="rbTitle"></div>
+    <span id="rbBody"></span>
+    <a class="go" id="rbGo" href="https://www.delphi.ai/bhalligan" target="_blank" rel="noopener"></a>
+    <span class="fine" id="rbFine"></span>
   </div>
-  <button class="fab" id="rbBtn" aria-expanded="false"><span class="av">RB</span>Robot Brian<span class="sub">office hours</span></button>
+  <button class="fab" id="rbBtn" aria-expanded="false"><span class="av">RB</span><span id="rbFab"></span><span class="sub" id="rbSub"></span></button>
 </div>
 <div class="savebar" id="savebar">
   <span class="msg" id="savemsg"></span>
@@ -192,85 +204,85 @@ footer{margin-top:20px;padding-top:12px;border-top:1px solid var(--line);color:v
 <script>
 (function(){
 const PHASES=[
- {p:1,name:"Founding",size:"< 10 people",desc:"Survive and find the wedge. Founders do everything.",trig:"Ends when you hire your first managers."},
- {p:2,name:"First team",size:"10 – 50",desc:"Turn the founders' habits into a team's habits.",trig:"Ends when a second management layer starts forming."},
- {p:3,name:"Pre-scale",size:"50 – 150",desc:"Build the machine before Dunbar's number breaks it.",trig:"Ends when the founder no longer knows everyone."},
- {p:4,name:"Scaleup",size:"150 +",desc:"Inspiration over perspiration. Run it, don't do it.",trig:"Ends when you hand over the keys."}
+ {p:1,name:"Founding",namezh:"创始期",size:"< 10 people",sizezh:"< 10 人",desc:"Survive and find the wedge. Founders do everything.",desczh:"活下来，找到楔子。创始人什么都自己干。",trig:"Ends when you hire your first managers.",trigzh:"招进第一批管理者，这一阶段结束。"},
+ {p:2,name:"First team",namezh:"第一支团队",size:"10 – 50",sizezh:"10 – 50 人",desc:"Turn the founders' habits into a team's habits.",desczh:"把创始人的习惯，变成团队的习惯。",trig:"Ends when a second management layer starts forming.",trigzh:"第二层管理开始出现，这一阶段结束。"},
+ {p:3,name:"Pre-scale",namezh:"规模化前",size:"50 – 150",sizezh:"50 – 150 人",desc:"Build the machine before Dunbar's number breaks it.",desczh:"在邓巴数把组织撑破之前，先把机器建好。",trig:"Ends when the founder no longer knows everyone.",trigzh:"创始人不再认识每一个人，这一阶段结束。"},
+ {p:4,name:"Scaleup",namezh:"规模化",size:"150 +",sizezh:"150 人以上",desc:"Inspiration over perspiration. Run it, don't do it.",desczh:"鼓舞多于流汗。去经营公司，而不是亲手做完所有事。",trig:"Ends when you hand over the keys.",trigzh:"交出钥匙，这一阶段结束。"}
 ];
 const THEMES=[
- {id:"leading",name:"Leading"},{id:"culture",name:"Culture"},{id:"team",name:"Team"},{id:"strategy",name:"Strategy"},
- {id:"decisions",name:"Deciding"},{id:"crisis",name:"Crisis"},{id:"craft",name:"CEO craft"},
- {id:"comms",name:"Communicating"},{id:"self",name:"Yourself"},{id:"exits",name:"Exits"},{id:"planning",name:"Planning"},{id:"stepping",name:"Stepping away"}
+ {id:"leading",name:"Leading",namezh:"领导"},{id:"culture",name:"Culture",namezh:"文化"},{id:"team",name:"Team",namezh:"团队"},{id:"strategy",name:"Strategy",namezh:"战略"},
+ {id:"decisions",name:"Deciding",namezh:"决策"},{id:"crisis",name:"Crisis",namezh:"危机"},{id:"craft",name:"CEO craft",namezh:"CEO 功课"},
+ {id:"comms",name:"Communicating",namezh:"沟通"},{id:"self",name:"Yourself",namezh:"自己"},{id:"exits",name:"Exits",namezh:"退出"},{id:"planning",name:"Planning",namezh:"规划"},{id:"stepping",name:"Stepping away",namezh:"交棒"}
 ];
 const L=[
- {s:"leading",n:"Perspiration vs inspiration",p:"Startup CEO: 90% perspiration, 10% inspiration. Scaleup CEO: the reverse. What worked in startup mode won't carry over — you have to evolve.",ph:3},
- {s:"leading",n:"Two forward, one back",p:"From outside, growth looks smooth up-and-to-the-right. Inside it is two steps forward, one step back, on repeat. There was never a silver-bullet hire, customer, partner or investor. It's a grind.",ph:1},
- {s:"leading",n:"Constructive dissatisfaction",p:"Operate in a perpetual state of constructive dissatisfaction — a board member's description of Halligan, and one he liked.",ph:1,ht:"Lorrie Norrington"},
- {s:"leading",n:"Manage the trust battery",p:"You start fully charged. Wrong calls drain it, and your moral authority with it. You get a few 'CEO cards' for bold bets the team disagrees with — not 52.",ph:2},
- {s:"leading",n:"Head in the sky, feet on the ground",p:"Paint a compelling future while confronting today's real problems head-on. Telling investors to ignore this quarter's numbers ends badly.",ph:1,ht:"Teddy Roosevelt"},
- {s:"leading",n:"Wartime vs peacetime",p:"Peacetime: decisions bubble up and are made deliberately. Wartime: top-down and fast. Know which mode you're in, and which one you thrive in. Halligan thrived in wartime.",ph:2,ht:"Ben Horowitz; cf. Paul Graham's 'founder mode'"},
- {s:"culture",n:"EV > TV > MeV",p:"Everyone should optimize enterprise value over their team's value over their own value. Left unwatched, leaders optimize for their team — usually at another team's expense. #ScalesTax",ph:3},
- {s:"culture",n:"Culture is your second product",p:"One product is sold to customers, the other to employees. Like the product, culture must be unique and valuable to attract and retain talent — and it is never finished.",ph:2},
- {s:"culture",n:"Customer, employee, or investor centric",p:"Every company is one of the three, and it comes from the CEO. HubSpot talked customer-centric but acted employee-centric for ~8 years; it shifted deliberately via management-meeting agendas, NPS in the bonus plan, and moving P&L spend from S&M to R&D.",ph:2},
- {s:"culture",n:"Mercenary-to-missionary ratio",p:"Early hires are missionaries; with scale, more mercenaries arrive. You can delay the shift, but not stop it — plenty of companies scaled fine with a mix. #ScalesTax",ph:3},
- {s:"culture",n:"Risk aversion grows with scale",p:"Early hires are risk-seeking because there's nothing to protect. As employees' net worth rises and the brand matters on LinkedIn, the org protects what it has. A preternaturally risk-seeking cofounder is a useful counterweight.",ph:4},
- {s:"culture",n:"Culture breaks at ~150 (Dunbar)",p:"Nearly every company's culture breaks around 150 people: missionary ratio drops, risk aversion rises, the founder no longer interviews everyone, a new management layer appears. Getting through it intact is the startup→scaleup threshold.",ph:3},
- {s:"culture",n:"Titles and org charts",p:"Tried an 'influence chart' instead of the org chart (it put Brad Coffey, not the CEO, at the center) and tried killing titles. Massive pushback. Not a hill worth dying on.",ph:3},
- {s:"team",n:"Times change, teams change",p:"HubSpot is on its third or fourth management team; each was right for its stage and people self-select for stage. Don't agonize over replacing leaders as you grow — company and leader are usually both better off.",ph:3},
- {s:"team",n:"Recruit from a few years ahead",p:"Execs and board members from companies a few steps ahead of you work. Hires from companies orders of magnitude larger (Microsoft, Google) suffer an impedance mismatch.",ph:2},
- {s:"team",n:"A truly independent board member",p:"Worth her weight in gold: she has already seen the movie and counterbalances the VCs. Source her yourself, not from a VC's circle.",ph:2},
- {s:"team",n:"Home-grown talent is underrated",p:"The post-round VC playbook says 'uplevel' the home-grown leaders. Sometimes right, usually over-indexed — Apple, Nvidia and Amazon exec teams are full of long-tenured people.",ph:3},
- {s:"team",n:"Build like the 2004 Red Sox",p:"Mostly home-grown talent plus a couple of well-placed veterans (Pedro, Schilling, Ortiz) to put you over the top.",ph:3},
- {s:"team",n:"You can't teach smart",p:"'You can't teach 7 feet.' Raw brainpower is valuable on its own. Aim to be the dumbest person at the management table.",ph:1,ht:"Tommy Heinsohn"},
- {s:"team",n:"Complements, not compliments",p:"100 calories into a strength returns 1,000; into a weakness, 101. Stop fixing weaknesses; hire people who plug them. Don't hire in your own image.",ph:1},
- {s:"team",n:"It was mostly product and sales",p:"In scaleup mode the CEO's time went to product and sales; legal and finance got little attention, which cost some good people.",ph:3},
- {s:"team",n:"5:1 praise ratio is bull-shiitake",p:"Five compliments per criticism, and the feedback sandwich, didn't match lived experience. Everyone knows the game.",ph:1},
- {s:"team",n:"Jensen is mostly right",p:"Early HubSpot: big, infrequent (monthly) meetings, no weekly 1:1s, praise and criticism in public. Later: closed weekly meetings, 1:1s, no public criticism. Nvidia suggests the early way wasn't crazy.",ph:1,ht:"Jensen Huang"},
- {s:"team",n:"Taste > analytics",p:"Nearly everyone has good analytical skills now. Vanishingly few have taste. Find them and give them power.",ph:2},
- {s:"team",n:"Exec hires stick ~60% of the time",p:"About 40% of senior hires churn within 18 months. Senior candidates interview well; interviewers overrate themselves. Shrink the panel; hire for 4/4 strengths with some 2/4 weaknesses over all-3/4 candidates. Don't sweat a whiff or two.",ph:3},
- {s:"team",n:"You need glue people to scale",p:"As you grow, leverage shifts from stars (top reps and leaders) to quiet ops wizards who know how the machine works and which knobs not to break.",ph:3,ht:"Ravi Gupta, Sequoia"},
- {s:"strategy",n:"Watch the competition, never follow it",p:"Watched Salesforce very carefully; refused to follow it. Ingrained in HubSpot's DNA.",ph:1,ht:"Arnoldo Hax, MIT Sloan"},
- {s:"strategy",n:"Zag when everyone zigs",p:"Be right about something everyone thinks you're wrong about, for a long time. HubSpot's three zags: stay SMB (more M than S); go from marketing app to CRM platform; build the CRM in-house instead of acquiring.",ph:1,ht:"Peter Thiel, Zero to One"},
- {s:"strategy",n:"Don't trash talk",p:"Respect strong competitors the way tennis finalists do. Salesforce is very good; nothing good comes from poking the bear.",ph:1,ht:"Dharmesh Shah"},
- {s:"strategy",n:"Category creation is harder than it looks",p:"'Inbound marketing' took a zillion blog posts, speeches, a book and a conference — more energy than marketing the product. Re-runs failed: inbound sales, CMR, COS. It was lightning in a bottle.",ph:2},
- {s:"strategy",n:"Become a platform or be eaten by one",p:"'Salesforce is to sales as HubSpot is to marketing' — until Salesforce bought ExactTarget, Pardot, Radian6 and Buddy Media. HubSpot pivoted to a CRM platform rather than be eaten. Very good call in hindsight.",ph:3,ht:"Steve Fredette, Toast"},
- {s:"decisions",n:"Compromise is the enemy of greatness",p:"Surrounded by smart people with good arguments on both sides, the first-time CEO crafts an uninspired compromise. Kiss of death. Break the tie; let arguments have winners and losers.",ph:2,ht:"Brad Coffey"},
- {s:"decisions",n:"Wear the NO shirt",p:"Money in the bank led to saying yes to everything, which led to lost focus, shoddy execution and budget problems. He wore a literal 'NO' shirt to management meetings until the point landed.",ph:2},
- {s:"decisions",n:"Two people watering one plant",p:"Every project with multiple owners went sideways. One DRI, always.",ph:1},
- {s:"decisions",n:"Sometimes doing nothing is right",p:"Bias to action is mostly good, but when the team is short-staffed and swamped, sit on your hands and let people grind. He jerked the steering wheel too much.",ph:2},
- {s:"decisions",n:"Avoid the tyranny of Or",p:"Push back on fast-or-good-or-cheap framing. Surprisingly, it sometimes works.",ph:2,ht:"George Hu"},
- {s:"decisions",n:"Nap on it",p:"Decision fatigue is real. A 20-minute nap lets the brain sweep and file; clarity often follows.",ph:1},
- {s:"decisions",n:"Get to the coal face",p:"The bigger the org, the further the CEO drifts from front-line staff and customers. Skip levels to hear reps directly; run customer panels at management and board meetings. 'This was smart.'",ph:3,ht:"David Skok"},
- {s:"crisis",n:"Never waste a good crisis",p:"Name the crisis out loud and use it to change. A last-day-of-Q1 outage in 2019 overhauled how product was built and pushed the culture customer-centric; Covid gave cover for wholesale business-model changes.",ph:1},
- {s:"crisis",n:"Don't nibble the shit sandwich",p:"Spinning employees, customers or partners backfires — people are smart and watching closely. Take the giant bite now.",ph:1,ht:"Ruth Porat"},
- {s:"crisis",n:"Next play",p:"Don't compound a missed shot with a dumb risk to make up for it. After unforced errors — including your own — move the company on.",ph:1,ht:"Coach K"},
- {s:"craft",n:"Annual 360 via NPS",p:"Cofounder surveys ~25 people up and down the org: 'How likely are you to recommend Brian as CEO?' and 'Why?' Themes with backing quotes go into a ~20-page doc — ten pages of features, ten of bugs — shared with company and board along with his own performance plan.",ph:2,ht:"Dharmesh Shah"},
- {s:"craft",n:"Your strength becomes your weakness",p:"Starting up is doing as many jobs as possible to survive. Scaling is shedding as many as possible to survive. Even founder-mode CEOs delegate the non-core.",ph:2,ht:"Aaron Levie"},
- {s:"craft",n:"CEO groups",p:"An early-stage group (Colin Angle of iRobot was a major influence) and later a public-company group (Slack, Atlassian, Shopify). Half misery-loves-company, half best practices — everyone's problems rhyme.",ph:1},
- {s:"craft",n:"A CEO coach",p:"The board 'strongly suggested' one. Half coach, half psychologist. Needed both.",ph:3},
- {s:"comms",n:"Truth-telling vs cheerleading",p:"Pure cheerleaders skip the details; he over-indexed on truth-telling and it wore on people. Check yourself periodically.",ph:1},
- {s:"comms",n:"Transparency builds trust",p:"Very transparent with employees, customers, partners and investors. New execs were uncomfortable at first. It filled the trust battery in innumerable ways.",ph:1},
- {s:"comms",n:"10,000 times, not 10,000 hours",p:"Benioff must have told the cloud story 10,000 times. Keep telling yours well past the point you're bored of it.",ph:1,ht:"Marc Benioff"},
- {s:"comms",n:"Presentation to presentation",p:"Always working on the next deck: customer pitch, company meeting, board, conference. Always.",ph:1},
- {s:"comms",n:"You're watched 10× more closely than you think",p:"People quote hallway remarks from a decade ago. Words and body language are a superpower or kryptonite.",ph:2},
- {s:"comms",n:"Absorb complexity, pass down clarity",p:"There is always fog inside the company. The leader's job is to clear it.",ph:2,ht:"JD Sherman"},
- {s:"self",n:"Balance never happened",p:"Chose the job over balance, never took a real vacation. Fell short on some personal goals, far exceeded professional ones. No regrets.",ph:1},
- {s:"self",n:"Work can be a lot of fun",p:"Serious meetings with constant levity, especially when things went sideways. Most board rooms today have too few laughs.",ph:1},
- {s:"self",n:"Be yourself; everyone else is taken",p:"Tried to imitate other CEOs for years. Confidence eventually allowed authenticity, quirks and all.",ph:1,ht:"Oscar Wilde"},
- {s:"self",n:"Imposter syndrome doesn't go away",p:"Still there while writing the essay. If you have it, you're not alone.",ph:1},
- {s:"self",n:"Take a slice of the pizza along the way",p:"Selling some common in the Series D (to Sequoia) stiffened his backbone against acquisition interest and aligned him with investors. Financially one of his worst decisions; no regrets.",ph:4},
- {s:"exits",n:"No acquisition offers came",p:"Not every scaleup gets offers — HubSpot didn't. A good price from a dream acquirer is unlikely, more so under today's regulation. Build something your grandkids will be proud of.",ph:4},
- {s:"exits",n:"The IPO is the starting line",p:"Repeated hundreds of times pre-IPO. Never discussed the stock price and asked others to stop — it drives people bonkers.",ph:4},
- {s:"exits",n:"Going public is underrated",p:"Pre-IPO liquidity dulls the allure, but the joy of IPO day and the party after are underestimated.",ph:4},
- {s:"planning",n:"Align the vectors",p:"Each employee is a vector with strength and direction. In most companies they point everywhere. The scaleup CEO's top job: hire strong vectors and point them the same way.",ph:2,ht:"Elon Musk, at a Sequoia event"},
- {s:"planning",n:"MSPOT — one planning doc",p:"Mission, Strategy, Projects, Omissions, Tracking. Forces the team to argue to agreement on a few priorities and how to measure them, and shelves everyone's pet rocks until the next cycle. HubSpot 2012: mission 'Transform marketing into something people love'; strategy 'grow through retention'; omissions Enterprise, International, CRM.",ph:1},
- {s:"planning",n:"Planning seasons",p:"Apr–Jun long-range strategy; Jul–Sep turn it into next year's plan; Oct–Dec budgets; Jan–Mar heads-down on Q1. In hindsight he'd run it twice a year — the earth-sun cycle doesn't match the earth-technology cycle.",ph:2},
- {s:"planning",n:"Complexity kills",p:"Complexity creeps in like gravity — HR policy, comp plans, pricing. Fight it tooth and nail. #ScalesTax",ph:3},
- {s:"planning",n:"More people, less gets done",p:"The annual priority list got shorter as the company got bigger. Learn to be okay with it; get the big things right.",ph:3},
- {s:"stepping",n:"Know when to hand over the keys",p:"A 2021 accident forced introspection: the joy was gone and the $2B→$10B phase didn't suit his skills. Six months later he became chair. Most founders wait too long.",ph:4},
- {s:"stepping",n:"Pick your successor carefully",p:"Yamini Rangan: promoted from within after working together; came from Dropbox and Workday (a few steps ahead); ran the company well during his medical leave.",ph:4},
- {s:"stepping",n:"Chairpeople don't drive",p:"Let go of the wheel. Chair and board are grandparents; the CEO is the parent. Failure case: Schultz going back in at Starbucks.",ph:4},
- {s:"stepping",n:"Being CEO is overrated",p:"You work for everyone — customers, partners, employees, investors — and are on call to all of them. Be careful what you wish for.",ph:1}
+ {s:"leading",n:"Perspiration vs inspiration",nzh:"流汗 vs 鼓舞",p:"Startup CEO: 90% perspiration, 10% inspiration. Scaleup CEO: the reverse. What worked in startup mode won't carry over — you have to evolve.",pzh:"创业 CEO：90% 流汗，10% 鼓舞。规模化 CEO：反过来。创业期奏效的做法带不过去——你必须进化。",ph:3},
+ {s:"leading",n:"Two forward, one back",nzh:"进两步，退一步",p:"From outside, growth looks smooth up-and-to-the-right. Inside it is two steps forward, one step back, on repeat. There was never a silver-bullet hire, customer, partner or investor. It's a grind.",pzh:"从外面看，增长平滑向上向右。里面则是进两步、退一步，循环往复。从来没有一招制胜的招聘、客户、合伙人或投资人。就是苦干。",ph:1},
+ {s:"leading",n:"Constructive dissatisfaction",nzh:"建设性不满",p:"Operate in a perpetual state of constructive dissatisfaction — a board member's description of Halligan, and one he liked.",pzh:"长期处在建设性不满里——一位董事这样形容 Halligan，他也喜欢这个说法。",ph:1,ht:"Lorrie Norrington"},
+ {s:"leading",n:"Manage the trust battery",nzh:"管理信任电量",p:"You start fully charged. Wrong calls drain it, and your moral authority with it. You get a few 'CEO cards' for bold bets the team disagrees with — not 52.",pzh:"上任时电池是满的。错误决策会把它耗掉，连带着你的道德权威。你只有几张「CEO 牌」可以打团队不同意的大胆赌注——不是 52 张。",ph:2},
+ {s:"leading",n:"Head in the sky, feet on the ground",nzh:"头在天上，脚在地上",p:"Paint a compelling future while confronting today's real problems head-on. Telling investors to ignore this quarter's numbers ends badly.",pzh:"画出令人信服的未来，同时正视今天的真问题。让投资人忽略本季数字，结局通常很糟。",ph:1,ht:"Teddy Roosevelt"},
+ {s:"leading",n:"Wartime vs peacetime",nzh:"战时 vs 和平",p:"Peacetime: decisions bubble up and are made deliberately. Wartime: top-down and fast. Know which mode you're in, and which one you thrive in. Halligan thrived in wartime.",pzh:"和平时期：决策自下而上、从容。战时：自上而下、要快。知道自己处在哪种模式，也知道自己适合哪种。Halligan 适合战时。",ph:2,ht:"Ben Horowitz; cf. Paul Graham's 'founder mode'"},
+ {s:"culture",n:"EV > TV > MeV",nzh:"企业价值 > 团队价值 > 我的价值",p:"Everyone should optimize enterprise value over their team's value over their own value. Left unwatched, leaders optimize for their team — usually at another team's expense. #ScalesTax",pzh:"每个人都应先优化企业价值，再团队价值，再个人价值。没人盯着时，领导者会优化自己的团队——通常以别的团队为代价。#规模税",ph:3},
+ {s:"culture",n:"Culture is your second product",nzh:"文化是你的第二个产品",p:"One product is sold to customers, the other to employees. Like the product, culture must be unique and valuable to attract and retain talent — and it is never finished.",pzh:"一个产品卖给客户，另一个卖给员工。和文化一样，它必须独特、有价值，才能吸引并留住人才——而且永远做不完。",ph:2},
+ {s:"culture",n:"Customer, employee, or investor centric",nzh:"客户、员工，还是投资人中心",p:"Every company is one of the three, and it comes from the CEO. HubSpot talked customer-centric but acted employee-centric for ~8 years; it shifted deliberately via management-meeting agendas, NPS in the bonus plan, and moving P&L spend from S&M to R&D.",pzh:"每家公司都是三者之一，而且来自 CEO。HubSpot 嘴上客户中心，实际员工中心了大约八年；后来靠管理会议议程、把 NPS 放进奖金、把损益开支从销售市场转到研发，才刻意转过来。",ph:2},
+ {s:"culture",n:"Mercenary-to-missionary ratio",nzh:"雇佣兵与传教士的比例",p:"Early hires are missionaries; with scale, more mercenaries arrive. You can delay the shift, but not stop it — plenty of companies scaled fine with a mix. #ScalesTax",pzh:"早期招的是传教士；规模一大，雇佣兵会进来。你可以推迟，挡不住——很多公司混着也能做大。#规模税",ph:3},
+ {s:"culture",n:"Risk aversion grows with scale",nzh:"规模越大越怕风险",p:"Early hires are risk-seeking because there's nothing to protect. As employees' net worth rises and the brand matters on LinkedIn, the org protects what it has. A preternaturally risk-seeking cofounder is a useful counterweight.",pzh:"早期的人爱冒险，因为没什么可保护。员工净资产涨了、品牌上了 LinkedIn，组织就开始守成。一个天生爱冒险的联合创始人，是有用的对冲。",ph:4},
+ {s:"culture",n:"Culture breaks at ~150 (Dunbar)",nzh:"文化在约 150 人处断裂（邓巴数）",p:"Nearly every company's culture breaks around 150 people: missionary ratio drops, risk aversion rises, the founder no longer interviews everyone, a new management layer appears. Getting through it intact is the startup→scaleup threshold.",pzh:"几乎每家公司的文化都会在 150 人左右断裂：传教士比例下降、避险上升、创始人不再面谈每一个人、新的管理层出现。完整走过去，才是创业→规模化的门槛。",ph:3},
+ {s:"culture",n:"Titles and org charts",nzh:"头衔和组织架构图",p:"Tried an 'influence chart' instead of the org chart (it put Brad Coffey, not the CEO, at the center) and tried killing titles. Massive pushback. Not a hill worth dying on.",pzh:"试过用「影响力图」代替组织架构图（中心是 Brad Coffey，不是 CEO），也试过取消头衔。反弹巨大。不值得为此拼命。",ph:3},
+ {s:"team",n:"Times change, teams change",nzh:"时代变了，团队也要变",p:"HubSpot is on its third or fourth management team; each was right for its stage and people self-select for stage. Don't agonize over replacing leaders as you grow — company and leader are usually both better off.",pzh:"HubSpot 已经是第三或第四套管理团队；每一套都适合当时的阶段，人会按阶段自我选择。成长时不要为换将纠结——公司和领导者通常都会更好。",ph:3},
+ {s:"team",n:"Recruit from a few years ahead",nzh:"从领先几年的公司招人",p:"Execs and board members from companies a few steps ahead of you work. Hires from companies orders of magnitude larger (Microsoft, Google) suffer an impedance mismatch.",pzh:"来自比你领先几步的公司的高管和董事有用。来自大几个数量级公司（微软、谷歌）的人，常有阻抗不匹配。",ph:2},
+ {s:"team",n:"A truly independent board member",nzh:"一位真正独立的董事",p:"Worth her weight in gold: she has already seen the movie and counterbalances the VCs. Source her yourself, not from a VC's circle.",pzh:"价值连城：她看过这部电影，能制衡 VC。自己去找，不要从 VC 圈子里找。",ph:2},
+ {s:"team",n:"Home-grown talent is underrated",nzh:"内部长出来的人才被低估了",p:"The post-round VC playbook says 'uplevel' the home-grown leaders. Sometimes right, usually over-indexed — Apple, Nvidia and Amazon exec teams are full of long-tenured people.",pzh:"融资后的 VC 剧本是把内部领导者「升级换代」。有时对，通常过了——苹果、英伟达、亚马逊的高管团队里，很多是待了很久的人。",ph:3},
+ {s:"team",n:"Build like the 2004 Red Sox",nzh:"像 2004 红袜那样组队",p:"Mostly home-grown talent plus a couple of well-placed veterans (Pedro, Schilling, Ortiz) to put you over the top.",pzh:"大部分是内部人才，再加几个卡位精准的老将（Pedro、Schilling、Ortiz），把你送过线。",ph:3},
+ {s:"team",n:"You can't teach smart",nzh:"聪明教不出来",p:"'You can't teach 7 feet.' Raw brainpower is valuable on its own. Aim to be the dumbest person at the management table.",pzh:"「你教不会七英尺。」原始脑力本身就有价值。目标是成为管理桌上最笨的那个人。",ph:1,ht:"Tommy Heinsohn"},
+ {s:"team",n:"Complements, not compliments",nzh:"要互补，不要互相吹捧",p:"100 calories into a strength returns 1,000; into a weakness, 101. Stop fixing weaknesses; hire people who plug them. Don't hire in your own image.",pzh:"100 卡路里投进优势，回报 1,000；投进弱点，只得 101。别再修弱点；雇能补上的人。不要按自己的样子招人。",ph:1},
+ {s:"team",n:"It was mostly product and sales",nzh:"时间大多给了产品和销售",p:"In scaleup mode the CEO's time went to product and sales; legal and finance got little attention, which cost some good people.",pzh:"规模化阶段，CEO 的时间给了产品和销售；法务和财务几乎没被照顾，因此流失了一些好人。",ph:3},
+ {s:"team",n:"5:1 praise ratio is bull-shiitake",nzh:"5:1 表扬比是唬人的",p:"Five compliments per criticism, and the feedback sandwich, didn't match lived experience. Everyone knows the game.",pzh:"五句夸加一句批，以及反馈三明治，对不上真实体验。大家都知道这套把戏。",ph:1},
+ {s:"team",n:"Jensen is mostly right",nzh:"黄仁勋大体是对的",p:"Early HubSpot: big, infrequent (monthly) meetings, no weekly 1:1s, praise and criticism in public. Later: closed weekly meetings, 1:1s, no public criticism. Nvidia suggests the early way wasn't crazy.",pzh:"早期 HubSpot：大会、不频繁（月度）、没有每周一对一，表扬和批评都公开。后来：封闭周会、一对一、不当众批评。英伟达说明，早期那套并不疯。",ph:1,ht:"Jensen Huang"},
+ {s:"team",n:"Taste > analytics",nzh:"品味 > 分析",p:"Nearly everyone has good analytical skills now. Vanishingly few have taste. Find them and give them power.",pzh:"现在几乎人人分析能力都不错。有品味的人极少。找到他们，给他们权力。",ph:2},
+ {s:"team",n:"Exec hires stick ~60% of the time",nzh:"高管招聘大约 60% 能留下来",p:"About 40% of senior hires churn within 18 months. Senior candidates interview well; interviewers overrate themselves. Shrink the panel; hire for 4/4 strengths with some 2/4 weaknesses over all-3/4 candidates. Don't sweat a whiff or two.",pzh:"大约 40% 的高管在 18 个月内离开。资深候选人面试很会；面试官高估自己。缩小面试小组；宁可要 4/4 的强项加一些 2/4 的弱项，也不要全是 3/4 的人。挥空一两次，不必纠结。",ph:3},
+ {s:"team",n:"You need glue people to scale",nzh:"要做大，需要胶水型的人",p:"As you grow, leverage shifts from stars (top reps and leaders) to quiet ops wizards who know how the machine works and which knobs not to break.",pzh:"长大以后，杠杆从明星（顶尖销售和领导者）转到安静的运营高手：他们知道机器怎么转，也知道哪些旋钮不能拧。",ph:3,ht:"Ravi Gupta, Sequoia"},
+ {s:"strategy",n:"Watch the competition, never follow it",nzh:"盯着对手，永远不要跟着走",p:"Watched Salesforce very carefully; refused to follow it. Ingrained in HubSpot's DNA.",pzh:"非常仔细地看 Salesforce，但拒绝跟随。写进了 HubSpot 的基因。",ph:1,ht:"Arnoldo Hax, MIT Sloan"},
+ {s:"strategy",n:"Zag when everyone zigs",nzh:"别人走直线，你走折线",p:"Be right about something everyone thinks you're wrong about, for a long time. HubSpot's three zags: stay SMB (more M than S); go from marketing app to CRM platform; build the CRM in-house instead of acquiring.",pzh:"在一件大家都觉得你错的事上，长时间是对的。HubSpot 的三次折线：留守中小企业（M 多于 S）；从营销应用做成 CRM 平台；自己做 CRM，而不是买。",ph:1,ht:"Peter Thiel, Zero to One"},
+ {s:"strategy",n:"Don't trash talk",nzh:"不要嘴炮对手",p:"Respect strong competitors the way tennis finalists do. Salesforce is very good; nothing good comes from poking the bear.",pzh:"像网球决赛选手那样尊重强对手。Salesforce 很强；去捅熊，没有好事。",ph:1,ht:"Dharmesh Shah"},
+ {s:"strategy",n:"Category creation is harder than it looks",nzh:"品类创造比看起来难",p:"'Inbound marketing' took a zillion blog posts, speeches, a book and a conference — more energy than marketing the product. Re-runs failed: inbound sales, CMR, COS. It was lightning in a bottle.",pzh:"「入境营销」花了海量博客、演讲、一本书和一个大会——比营销产品还费力。重演都失败了：入境销售、CMR、COS。那是瓶中闪电。",ph:2},
+ {s:"strategy",n:"Become a platform or be eaten by one",nzh:"成为平台，否则被平台吃掉",p:"'Salesforce is to sales as HubSpot is to marketing' — until Salesforce bought ExactTarget, Pardot, Radian6 and Buddy Media. HubSpot pivoted to a CRM platform rather than be eaten. Very good call in hindsight.",pzh:"「Salesforce 之于销售，如同 HubSpot 之于营销」——直到 Salesforce 买下 ExactTarget、Pardot、Radian6 和 Buddy Media。HubSpot 转成 CRM 平台，以免被吃掉。事后看，这一步非常对。",ph:3,ht:"Steve Fredette, Toast"},
+ {s:"decisions",n:"Compromise is the enemy of greatness",nzh:"妥协是伟大的敌人",p:"Surrounded by smart people with good arguments on both sides, the first-time CEO crafts an uninspired compromise. Kiss of death. Break the tie; let arguments have winners and losers.",pzh:"身边都是聪明人，两边都有好理由，第一次当 CEO 的人会做出毫无锋芒的折中。这是死吻。打破平局；让争论有赢家和输家。",ph:2,ht:"Brad Coffey"},
+ {s:"decisions",n:"Wear the NO shirt",nzh:"穿上 NO 衬衫",p:"Money in the bank led to saying yes to everything, which led to lost focus, shoddy execution and budget problems. He wore a literal 'NO' shirt to management meetings until the point landed.",pzh:"账上有钱就会什么都答应，然后失去焦点、执行变差、预算出事。他真的穿着「NO」衬衫去开管理会，直到这句话落地。",ph:2},
+ {s:"decisions",n:"Two people watering one plant",nzh:"两个人浇同一棵植物",p:"Every project with multiple owners went sideways. One DRI, always.",pzh:"多个负责人的项目都会跑偏。永远只要一个直接负责人。",ph:1},
+ {s:"decisions",n:"Sometimes doing nothing is right",nzh:"有时什么都不做才是对的",p:"Bias to action is mostly good, but when the team is short-staffed and swamped, sit on your hands and let people grind. He jerked the steering wheel too much.",pzh:"偏向行动大体是好的，但团队人手不够、已经淹水时，把手放在腿上，让人埋头干。他以前打方向盘打得太勤。",ph:2},
+ {s:"decisions",n:"Avoid the tyranny of Or",nzh:"避开「或者」的暴政",p:"Push back on fast-or-good-or-cheap framing. Surprisingly, it sometimes works.",pzh:"抵制「快或者好或者便宜」的框法。出人意料，有时真的能破。",ph:2,ht:"George Hu"},
+ {s:"decisions",n:"Nap on it",nzh:"睡一觉再定",p:"Decision fatigue is real. A 20-minute nap lets the brain sweep and file; clarity often follows.",pzh:"决策疲劳是真的。二十分钟小睡让大脑清扫归档；清楚常常随后到来。",ph:1},
+ {s:"decisions",n:"Get to the coal face",nzh:"走到煤层工作面",p:"The bigger the org, the further the CEO drifts from front-line staff and customers. Skip levels to hear reps directly; run customer panels at management and board meetings. 'This was smart.'",pzh:"组织越大，CEO 离一线员工和客户越远。跨级直接听销售；在管理和董事会上开客户座谈。「这很聪明。」",ph:3,ht:"David Skok"},
+ {s:"crisis",n:"Never waste a good crisis",nzh:"好危机不要浪费",p:"Name the crisis out loud and use it to change. A last-day-of-Q1 outage in 2019 overhauled how product was built and pushed the culture customer-centric; Covid gave cover for wholesale business-model changes.",pzh:"把危机大声说出来，并用来改变。2019 年一季度最后一天的宕机，重做了产品构建方式，并把文化推向客户中心；新冠给了大规模改商业模式的掩护。",ph:1},
+ {s:"crisis",n:"Don't nibble the shit sandwich",nzh:"别小口啃屎三明治",p:"Spinning employees, customers or partners backfires — people are smart and watching closely. Take the giant bite now.",pzh:"对员工、客户或伙伴粉饰会反噬——人很聪明，而且盯得很紧。现在就大口咬下去。",ph:1,ht:"Ruth Porat"},
+ {s:"crisis",n:"Next play",nzh:"下一回合",p:"Don't compound a missed shot with a dumb risk to make up for it. After unforced errors — including your own — move the company on.",pzh:"别用一个愚蠢的冒险去弥补打铁。非受迫失误之后——包括你自己的——让公司往下走。",ph:1,ht:"Coach K"},
+ {s:"craft",n:"Annual 360 via NPS",nzh:"用 NPS 做年度 360",p:"Cofounder surveys ~25 people up and down the org: 'How likely are you to recommend Brian as CEO?' and 'Why?' Themes with backing quotes go into a ~20-page doc — ten pages of features, ten of bugs — shared with company and board along with his own performance plan.",pzh:"联合创始人上下调查约 25 人：「你有多大可能推荐 Brian 当 CEO？」以及「为什么？」主题和原话写进约 20 页的文档——十页优点，十页毛病——连同他自己的绩效计划，给公司和董事会。",ph:2,ht:"Dharmesh Shah"},
+ {s:"craft",n:"Your strength becomes your weakness",nzh:"你的优势会变成弱点",p:"Starting up is doing as many jobs as possible to survive. Scaling is shedding as many as possible to survive. Even founder-mode CEOs delegate the non-core.",pzh:"创业是尽可能多干活才能活。规模化是尽可能多卸活才能活。即使是创始人模式的 CEO，也要把非核心交出去。",ph:2,ht:"Aaron Levie"},
+ {s:"craft",n:"CEO groups",nzh:"CEO 小组",p:"An early-stage group (Colin Angle of iRobot was a major influence) and later a public-company group (Slack, Atlassian, Shopify). Half misery-loves-company, half best practices — everyone's problems rhyme.",pzh:"早期有一个小组（iRobot 的 Colin Angle 影响很大），后来有一个上市公司小组（Slack、Atlassian、Shopify）。一半同病相怜，一半最佳实践——大家的问题押着韵。",ph:1},
+ {s:"craft",n:"A CEO coach",nzh:"一位 CEO 教练",p:"The board 'strongly suggested' one. Half coach, half psychologist. Needed both.",pzh:"董事会「强烈建议」请一位。一半教练，一半心理医生。两样都需要。",ph:3},
+ {s:"comms",n:"Truth-telling vs cheerleading",nzh:"说实话 vs 当拉拉队长",p:"Pure cheerleaders skip the details; he over-indexed on truth-telling and it wore on people. Check yourself periodically.",pzh:"纯拉拉队长跳过细节；他过度偏向说实话，让人疲倦。定期检查自己。",ph:1},
+ {s:"comms",n:"Transparency builds trust",nzh:"透明建立信任",p:"Very transparent with employees, customers, partners and investors. New execs were uncomfortable at first. It filled the trust battery in innumerable ways.",pzh:"对员工、客户、伙伴和投资人非常透明。新高管起初不舒服。它用无数种方式给信任电池充电。",ph:1},
+ {s:"comms",n:"10,000 times, not 10,000 hours",nzh:"一万次，不是一万小时",p:"Benioff must have told the cloud story 10,000 times. Keep telling yours well past the point you're bored of it.",pzh:"贝尼奥夫一定把云的故事讲了一万次。把你的故事一直讲到你自己都腻了还要讲。",ph:1,ht:"Marc Benioff"},
+ {s:"comms",n:"Presentation to presentation",nzh:"一页页做到下一页",p:"Always working on the next deck: customer pitch, company meeting, board, conference. Always.",pzh:"永远在做下一份材料：客户路演、公司会、董事会、大会。永远。",ph:1},
+ {s:"comms",n:"You're watched 10× more closely than you think",nzh:"你被盯得比自己以为的紧十倍",p:"People quote hallway remarks from a decade ago. Words and body language are a superpower or kryptonite.",pzh:"人们会引用你十年前走廊里的一句话。用词和肢体语言，要么是超能力，要么是氪石。",ph:2},
+ {s:"comms",n:"Absorb complexity, pass down clarity",nzh:"吸收复杂，向下传递清楚",p:"There is always fog inside the company. The leader's job is to clear it.",pzh:"公司里总有雾。领导者的工作是把它拨开。",ph:2,ht:"JD Sherman"},
+ {s:"self",n:"Balance never happened",nzh:"平衡从未发生",p:"Chose the job over balance, never took a real vacation. Fell short on some personal goals, far exceeded professional ones. No regrets.",pzh:"选择工作而不是平衡，从未好好度一次假。一些个人目标没达到，职业目标远超预期。不后悔。",ph:1},
+ {s:"self",n:"Work can be a lot of fun",nzh:"工作可以很好玩",p:"Serious meetings with constant levity, especially when things went sideways. Most board rooms today have too few laughs.",pzh:"严肃的会里一直有轻松，尤其当事情跑偏时。今天大多数董事会笑声太少。",ph:1},
+ {s:"self",n:"Be yourself; everyone else is taken",nzh:"做你自己；别人的位置都被占了",p:"Tried to imitate other CEOs for years. Confidence eventually allowed authenticity, quirks and all.",pzh:"模仿别的 CEO 很多年。自信最终允许真实，连怪癖一起。",ph:1,ht:"Oscar Wilde"},
+ {s:"self",n:"Imposter syndrome doesn't go away",nzh:"冒名者综合征不会消失",p:"Still there while writing the essay. If you have it, you're not alone.",pzh:"写这篇长文时它还在。如果你有，你不是一个人。",ph:1},
+ {s:"self",n:"Take a slice of the pizza along the way",nzh:"路上先切一块披萨",p:"Selling some common in the Series D (to Sequoia) stiffened his backbone against acquisition interest and aligned him with investors. Financially one of his worst decisions; no regrets.",pzh:"D 轮把一部分普通股卖给红杉，让他更硬得起来拒绝收购，并与投资人对齐。财务上是最差决策之一；不后悔。",ph:4},
+ {s:"exits",n:"No acquisition offers came",nzh:"收购要约从未到来",p:"Not every scaleup gets offers — HubSpot didn't. A good price from a dream acquirer is unlikely, more so under today's regulation. Build something your grandkids will be proud of.",pzh:"不是每家规模化公司都会接到要约——HubSpot 没有。梦想买家给好价钱本来就不太可能，今天监管下更难。做一件孙辈会骄傲的事。",ph:4},
+ {s:"exits",n:"The IPO is the starting line",nzh:"IPO 是起跑线",p:"Repeated hundreds of times pre-IPO. Never discussed the stock price and asked others to stop — it drives people bonkers.",pzh:"上市前重复了几百遍。从不讨论股价，也请别人别谈——它会把人逼疯。",ph:4},
+ {s:"exits",n:"Going public is underrated",nzh:"上市被低估了",p:"Pre-IPO liquidity dulls the allure, but the joy of IPO day and the party after are underestimated.",pzh:"上市前流动性冲淡了吸引力，但上市当天和之后派对的快乐，被低估了。",ph:4},
+ {s:"planning",n:"Align the vectors",nzh:"把向量对齐",p:"Each employee is a vector with strength and direction. In most companies they point everywhere. The scaleup CEO's top job: hire strong vectors and point them the same way.",pzh:"每个员工都是有力度和方向的向量。多数公司里它们指向四面八方。规模化 CEO 的第一件事：雇强向量，并把它们指向同一边。",ph:2,ht:"Elon Musk, at a Sequoia event"},
+ {s:"planning",n:"MSPOT — one planning doc",nzh:"MSPOT——一份规划文件",p:"Mission, Strategy, Projects, Omissions, Tracking. Forces the team to argue to agreement on a few priorities and how to measure them, and shelves everyone's pet rocks until the next cycle. HubSpot 2012: mission 'Transform marketing into something people love'; strategy 'grow through retention'; omissions Enterprise, International, CRM.",pzh:"使命、战略、项目、不做的事、追踪。逼团队争到对少数优先级和衡量方式达成一致，把每个人的宠物石头搁到下一轮。HubSpot 2012：使命「把营销变成人们喜欢的东西」；战略「靠留存增长」；不做企业客户、国际化、CRM。",ph:1},
+ {s:"planning",n:"Planning seasons",nzh:"规划季节",p:"Apr–Jun long-range strategy; Jul–Sep turn it into next year's plan; Oct–Dec budgets; Jan–Mar heads-down on Q1. In hindsight he'd run it twice a year — the earth-sun cycle doesn't match the earth-technology cycle.",pzh:"4–6 月做长期战略；7–9 月变成明年计划；10–12 月做预算；1–3 月埋头一季度。事后看他会一年跑两轮——地球绕日周期，对不上地球绕技术的周期。",ph:2},
+ {s:"planning",n:"Complexity kills",nzh:"复杂会杀人",p:"Complexity creeps in like gravity — HR policy, comp plans, pricing. Fight it tooth and nail. #ScalesTax",pzh:"复杂像重力一样渗进来——人事政策、薪酬方案、定价。要牙咬爪抓地打。#规模税",ph:3},
+ {s:"planning",n:"More people, less gets done",nzh:"人越多，做成的越少",p:"The annual priority list got shorter as the company got bigger. Learn to be okay with it; get the big things right.",pzh:"公司越大，年度优先事项越短。学会接受；把大事做对。",ph:3},
+ {s:"stepping",n:"Know when to hand over the keys",nzh:"知道何时交出钥匙",p:"A 2021 accident forced introspection: the joy was gone and the $2B→$10B phase didn't suit his skills. Six months later he became chair. Most founders wait too long.",pzh:"2021 年一场事故逼他内省：快乐没了，20 亿到 100 亿那一程也不适合他的技能。六个月后他改任董事长。多数创始人等得太久。",ph:4},
+ {s:"stepping",n:"Pick your successor carefully",nzh:"慎重挑选继任者",p:"Yamini Rangan: promoted from within after working together; came from Dropbox and Workday (a few steps ahead); ran the company well during his medical leave.",pzh:"Yamini Rangan：共事之后从内部提拔；来自 Dropbox 和 Workday（领先几步）；他病假期间把公司跑得很好。",ph:4},
+ {s:"stepping",n:"Chairpeople don't drive",nzh:"董事长不开车",p:"Let go of the wheel. Chair and board are grandparents; the CEO is the parent. Failure case: Schultz going back in at Starbucks.",pzh:"松开方向盘。董事长和董事会是祖父母；CEO 才是父母。失败案例：舒尔茨回锅星巴克。",ph:4},
+ {s:"stepping",n:"Being CEO is overrated",nzh:"当 CEO 被高估了",p:"You work for everyone — customers, partners, employees, investors — and are on call to all of them. Be careful what you wish for.",pzh:"你为所有人工作——客户、伙伴、员工、投资人——而且随时待命。许愿前要想清楚。",ph:1}
 ];
 L.forEach((x,i)=>{x.id="h"+String(i+1).padStart(2,"0")});
 
@@ -293,30 +305,88 @@ function migrate(s){
 const get=id=>state.lessons[id]||{done:false,note:""};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const LANGK="scp-lang";
+let lang=(()=>{try{const s=localStorage.getItem(LANGK);if(s==="zh"||s==="en")return s}catch(e){} return /^zh\b/i.test(navigator.language||"")?"zh":"en"})();
+const zh=()=>lang==="zh";
+const tn=(o,k)=>zh()&&o[k+"zh"]?o[k+"zh"]:o[k];
+const UI={
+  en:{
+    title:"Scaleup CEO Playbook",
+    eyebrow:"Master memory · Founder → scaleup CEO",
+    lede:`Brian Halligan's 68 <b>Halliganisms</b> — from his essay <a href="https://www.linkedin.com/pulse/startup-founder-scaleup-ceos-journey-from-0-25billion-brian-halligan-e1f4e/" target="_blank" rel="noopener">A Startup Founder to Scaleup CEO's Journey from $0 to $25 billion</a> — as a progressive tree. Pick a phase on the path, open a theme, open a lesson. Mark a lesson ✓ once it's part of how we run; add a note if there's something to remember.`,
+    at:"We are at ", here:"We are here", expand:"Expand all", collapse:"Collapse",
+    lessons:"lessons", how:"part of how we run", mark:"Mark as part of how we run", marked:"✓ Part of how we run",
+    note:"Note for us…", local:"saved in this browser", never:"never", last:"last saved ",
+    personal:"Personal copy — your ✓ marks, notes and phase are saved in this browser only.",
+    foot:`Principles are paraphrased from Brian Halligan's "Halliganisms" — <a href="https://www.linkedin.com/pulse/startup-founder-scaleup-ceos-journey-from-0-25billion-brian-halligan-e1f4e/" target="_blank" rel="noopener">read the original essay on LinkedIn</a>; h/t credits are his. Phase mapping, ✓ marks and notes stay in this browser.`,
+    rbTitle:"Robot Brian · office hours", rbBody:"Stuck on a lesson? Ask Brian Halligan's AI clone how he'd apply it — it's trained on his writing and talks.",
+    rbGo:"Open office hours ↗", rbFine:"delphi.ai/bhalligan · opens in a new tab", rbFab:"Robot Brian", rbSub:"office hours",
+    discard:"Discard", save:"Save to page", saving:"Saving…",
+    unsaved:(n)=>`${n} unsaved change${n>1?"s":""} — saving publishes a new version for everyone`
+  },
+  zh:{
+    title:"规模化 CEO 作战手册",
+    eyebrow:"主记忆 · 创始人 → 规模化 CEO",
+    lede:`Brian Halligan 的 68 条 <b>Halliganisms</b>——出自长文 <a href="https://www.linkedin.com/pulse/startup-founder-scaleup-ceos-journey-from-0-25billion-brian-halligan-e1f4e/" target="_blank" rel="noopener">A Startup Founder to Scaleup CEO's Journey from $0 to $25 billion</a>——做成一棵递进树。在路径上选阶段，打开主题，打开原则。成为我们做事方式的一部分后打 ✓；有要记住的，写下笔记。`,
+    at:"我们在 ", here:"我们在这里", expand:"全部展开", collapse:"收起",
+    lessons:"条原则", how:"已成为做事方式", mark:"标为已成为做事方式", marked:"✓ 已成为做事方式",
+    note:"给我们的笔记…", local:"保存在本浏览器", never:"尚未", last:"上次保存 ",
+    personal:"个人副本——你的 ✓、笔记和阶段只保存在这个浏览器里。",
+    foot:`原则转述自 Brian Halligan 的 Halliganisms——<a href="https://www.linkedin.com/pulse/startup-founder-scaleup-ceos-journey-from-0-25billion-brian-halligan-e1f4e/" target="_blank" rel="noopener">在 LinkedIn 阅读原文</a>；致谢归他。阶段划分、✓ 和笔记留在本浏览器。`,
+    rbTitle:"Robot Brian · 办公时间", rbBody:"卡在某条原则上？去问 Brian Halligan 的 AI 分身他会怎么用——训练材料是他的文章和演讲。",
+    rbGo:"打开办公时间 ↗", rbFine:"delphi.ai/bhalligan · 在新标签打开", rbFab:"Robot Brian", rbSub:"办公时间",
+    discard:"放弃", save:"保存到页面", saving:"保存中…",
+    unsaved:(n)=>`${n} 处未保存更改——保存会发布新版本给所有人`
+  }
+};
+const u=k=>UI[lang][k];
 
 let viewPhase=state.phase;
 const openThemes=new Set(); const openLeaves=new Set();
 
-// ---------- render ----------
-function render(){ renderSpine(); renderTree(); renderProgress(); }
+function renderChrome(){
+  document.documentElement.lang=lang;
+  document.title=u("title");
+  $("#eyebrow").textContent=u("eyebrow");
+  $("#htitle").textContent=u("title");
+  $("#lede").innerHTML=u("lede");
+  $("#foot").innerHTML=u("foot");
+  $("#expandAll").textContent=u("expand");
+  $("#collapseAll").textContent=u("collapse");
+  $("#phaseLab").childNodes[0].nodeValue=u("at");
+  $("#langEn").setAttribute("aria-pressed", lang==="en"?"true":"false");
+  $("#langZh").setAttribute("aria-pressed", lang==="zh"?"true":"false");
+  $("#rbTitle").textContent=u("rbTitle");
+  $("#rbBody").textContent=u("rbBody");
+  $("#rbGo").textContent=u("rbGo");
+  $("#rbFine").textContent=u("rbFine");
+  $("#rbFab").textContent=u("rbFab");
+  $("#rbSub").textContent=u("rbSub");
+  $("#rbCard").setAttribute("aria-label", u("rbTitle"));
+  $("#discard").textContent=u("discard");
+  $("#save").textContent=u("save");
+  if(mode==="personal"){const n=$("#modeNote"); n.textContent=u("personal"); n.hidden=false}
+}
+
+function render(){ renderChrome(); renderSpine(); renderTree(); renderProgress(); }
 function renderSpine(){
   let h="";
   for(const P of PHASES){
     const items=L.filter(x=>x.ph===P.p), d=items.filter(x=>get(x.id).done).length;
     h+=`<button class="pnode" data-p="${P.p}" ${state.phase===P.p?'data-here="1"':""} aria-pressed="${viewPhase===P.p?"true":"false"}">
-      <div class="dot">P${P.p}</div><div class="t">${esc(P.name)}</div><div class="s">${P.size}</div><div class="k">${d}/${items.length} ✓</div><span class="here">We are here</span></button>`;
+      <div class="dot">P${P.p}</div><div class="t">${esc(tn(P,"name"))}</div><div class="s">${esc(tn(P,"size"))}</div><div class="k">${d}/${items.length} ✓</div><span class="here">${esc(u("here"))}</span></button>`;
   }
   $("#spine").innerHTML=h;
-  $("#phaseSel").innerHTML=PHASES.map(P=>`<option value="${P.p}" ${state.phase===P.p?"selected":""}>P${P.p} · ${esc(P.name)} (${P.size})</option>`).join("");
+  $("#phaseSel").innerHTML=PHASES.map(P=>`<option value="${P.p}" ${state.phase===P.p?"selected":""}>P${P.p} · ${esc(tn(P,"name"))} (${esc(tn(P,"size"))})</option>`).join("");
   $("#phaseSel").disabled=!canWrite;
 }
 function leafHTML(x){
   const v=get(x.id), open=openLeaves.has(x.id);
   return `<div class="branch"><div class="node leaf ${v.done?"done":""} ${v.note?"noted":""} ${open?"open":""}" data-id="${x.id}">
-    <button data-act="leaf"><span class="chk">✓</span><span>${esc(x.n)}</span></button>
-    <div class="detail"><p>${esc(x.p)}</p>${x.ht?`<span class="ht">h/t ${esc(x.ht)}</span>`:""}
-      ${canWrite?`<div class="ctl"><button class="mark" data-act="mark">${v.done?"✓ Part of how we run":"Mark as part of how we run"}</button></div>`:(v.done?`<div class="ctl"><span style="font-size:12px;color:var(--done-ink)">✓ Part of how we run</span></div>`:"")}
-      <textarea rows="1" data-act="note" placeholder="Note for us…" ${canWrite?"":"disabled"}>${esc(v.note)}</textarea>${!canWrite&&v.note?`<p style="margin:0;font-size:12.5px">${esc(v.note)}</p>`:""}
+    <button data-act="leaf"><span class="chk">✓</span><span>${esc(tn(x,"n"))}</span></button>
+    <div class="detail"><p>${esc(tn(x,"p"))}</p>${x.ht?`<span class="ht">h/t ${esc(x.ht)}</span>`:""}
+      ${canWrite?`<div class="ctl"><button class="mark" data-act="mark">${v.done?u("marked"):u("mark")}</button></div>`:(v.done?`<div class="ctl"><span style="font-size:12px;color:var(--done-ink)">${esc(u("marked"))}</span></div>`:"")}
+      <textarea rows="1" data-act="note" placeholder="${esc(u("note"))}" ${canWrite?"":"disabled"}>${esc(v.note)}</textarea>${!canWrite&&v.note?`<p style="margin:0;font-size:12.5px">${esc(v.note)}</p>`:""}
     </div></div></div>`;
 }
 function renderTree(){
@@ -326,17 +396,18 @@ function renderTree(){
   for(const T of THEMES){
     const ti=items.filter(x=>x.s===T.id); if(!ti.length)continue;
     const d=ti.filter(x=>get(x.id).done).length, key=P.p+":"+T.id;
-    kids+=`<div class="branch ${openThemes.has(key)?"open":""}" data-theme="${key}"><div class="node theme"><button data-act="theme"><span>${esc(T.name)}</span><span class="c"><i>${d}✓</i> / ${ti.length}</span></button></div>
+    kids+=`<div class="branch ${openThemes.has(key)?"open":""}" data-theme="${key}"><div class="node theme"><button data-act="theme"><span>${esc(tn(T,"name"))}</span><span class="c"><i>${d}✓</i> / ${ti.length}</span></button></div>
       <div class="kids">${ti.map(leafHTML).join("")}</div></div>`;
   }
   const tree=$("#tree"); tree.dataset.p=P.p;
-  tree.innerHTML=`<div class="branch open"><div class="node root"><div class="t">P${P.p} · ${esc(P.name)}</div><div class="s">${P.size} · ${items.length} lessons</div><div class="d">${esc(P.desc)}</div><div class="trig">${esc(P.trig)}</div></div><div class="kids">${kids}</div></div>`;
+  tree.innerHTML=`<div class="branch open"><div class="node root"><div class="t">P${P.p} · ${esc(tn(P,"name"))}</div><div class="s">${esc(tn(P,"size"))} · ${items.length} ${esc(u("lessons"))}</div><div class="d">${esc(tn(P,"desc"))}</div><div class="trig">${esc(tn(P,"trig"))}</div></div><div class="kids">${kids}</div></div>`;
   tree.querySelectorAll("textarea").forEach(autosize);
 }
 function renderProgress(){
   const d=L.filter(x=>get(x.id).done).length;
-  const when=state.updatedAt?new Date(state.updatedAt).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}):"never";
-  $("#progress").innerHTML=`<b>${d}<span style="font-size:14px;color:var(--ink-3)"> / ${L.length}</span></b>part of how we run<br>${mode==="personal"?"saved in this browser":"last saved "+esc(when)}`;
+  const loc=zh()?"zh-CN":undefined;
+  const when=state.updatedAt?new Date(state.updatedAt).toLocaleDateString(loc,{month:"short",day:"numeric",year:"numeric"}):u("never");
+  $("#progress").innerHTML=`<b>${d}<span style="font-size:14px;color:var(--ink-3)"> / ${L.length}</span></b>${esc(u("how"))}<br>${mode==="personal"?esc(u("local")):esc(u("last"))+esc(when)}`;
 }
 
 // ---------- interaction ----------
@@ -364,10 +435,13 @@ function markDirty(k){
 function enterPersonal(){
   mode="personal";canWrite=true;dirty.clear();updateSavebar();
   try{const p=JSON.parse(localStorage.getItem(LS)||"null");if(p){if(p.phase)state.phase=p.phase;Object.assign(state.lessons,p.lessons||{});state.updatedAt=p.at||state.updatedAt}}catch(e){}
-  const n=$("#modeNote");n.textContent="Personal copy — your ✓ marks, notes and phase are saved in this browser only.";n.hidden=false;
+  const n=$("#modeNote");n.textContent=u("personal");n.hidden=false;
   render();
 }
-function updateSavebar(){const n=dirty.size;$("#savebar").classList.toggle("on",n>0);$("#rb").classList.toggle("lift",n>0);$("#savemsg").textContent=n?`${n} unsaved change${n>1?"s":""} — saving publishes a new version for everyone`:""}
+function updateSavebar(){const n=dirty.size;$("#savebar").classList.toggle("on",n>0);$("#rb").classList.toggle("lift",n>0);$("#savemsg").textContent=n?u("unsaved")(n):""}
+$("#langEn").addEventListener("click",()=>setLang("en"));
+$("#langZh").addEventListener("click",()=>setLang("zh"));
+function setLang(next){ if(lang===next)return; lang=next; try{localStorage.setItem(LANGK,lang)}catch(e){} render(); }
 $("#rbBtn").addEventListener("click",()=>{const o=$("#rb").classList.toggle("open");$("#rbBtn").setAttribute("aria-expanded",o)});
 $("#discard").addEventListener("click",()=>{state=JSON.parse(JSON.stringify(saved));dirty.clear();updateSavebar();render()});
 $("#save").addEventListener("click",save);
@@ -383,10 +457,10 @@ function buildHTML(){
 }
 async function save(){
   if(!artifactNS){toast("Saving isn't available in this view.");return}
-  const btn=$("#save");btn.disabled=true;btn.textContent="Saving…";
+  const btn=$("#save");btn.disabled=true;btn.textContent=u("saving");
   try{ await artifactNS.publish(buildHTML()); }
   catch(err){
-    btn.disabled=false;btn.textContent="Save to page";
+    btn.disabled=false;btn.textContent=u("save");
     const code=err&&err.code;
     if(code==="conflict")toast("Someone else saved first — reloading to the latest version.");
     else if(code==="not_writer"||code==="not_granted"){toast("You can't edit the shared page — switching to your personal copy.");enterPersonal()}
