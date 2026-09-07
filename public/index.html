@@ -83,12 +83,15 @@ h1{font-family:var(--cond);font-weight:700;font-size:32px;line-height:1.05;margi
 .tree[data-p="2"] .node.root{border-color:var(--p2);background:var(--p2s)}
 .tree[data-p="3"] .node.root{border-color:var(--p3);background:var(--p3s)}
 .tree[data-p="4"] .node.root{border-color:var(--p4);background:var(--p4s)}
+.node.group{padding:0;min-width:170px;max-width:200px;background:var(--accent-soft);border-color:var(--accent)}
+.node.group > button,.node.theme > button{all:unset;display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;padding:9px 12px;cursor:pointer;box-sizing:border-box;font-family:var(--cond);font-weight:600}
+.node.group > button{font-size:16px;font-weight:700}
 .node.theme{padding:0;min-width:190px;max-width:220px}
-.node.theme > button{all:unset;display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;padding:9px 12px;cursor:pointer;box-sizing:border-box;font-family:var(--cond);font-weight:600;font-size:15px}
-.node.theme > button .c{font-family:var(--mono);font-size:11px;color:var(--ink-3);font-weight:400;white-space:nowrap}
-.node.theme > button .c i{font-style:normal;color:var(--done-ink)}
-.node.theme > button::after{content:"›";font-size:18px;color:var(--ink-3);margin-left:2px;transition:transform .15s}
-.branch.open > .node.theme > button::after{transform:rotate(90deg)}
+.node.theme > button{font-size:15px}
+.node.group > button .c,.node.theme > button .c{font-family:var(--mono);font-size:11px;color:var(--ink-3);font-weight:400;white-space:nowrap}
+.node.group > button .c i,.node.theme > button .c i{font-style:normal;color:var(--done-ink)}
+.node.group > button::after,.node.theme > button::after{content:"›";font-size:18px;color:var(--ink-3);margin-left:2px;transition:transform .15s}
+.branch.open > .node.group > button::after,.branch.open > .node.theme > button::after{transform:rotate(90deg)}
 .node.leaf{padding:0;min-width:220px;max-width:340px}
 .node.leaf > button{all:unset;display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;cursor:pointer;box-sizing:border-box;font-size:13.5px;font-weight:500}
 .node.leaf > button .chk{width:16px;height:16px;border:1.5px solid var(--line);border-radius:4px;flex:none;display:grid;place-items:center;font-size:11px;color:transparent}
@@ -140,13 +143,14 @@ h1{font-family:var(--cond);font-weight:700;font-size:32px;line-height:1.05;margi
 button:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 footer{margin-top:20px;padding-top:12px;border-top:1px solid var(--line);color:var(--ink-3);font-size:12px;max-width:80ch}
 html[lang="zh"]{font-size:15px}
-html[lang="zh"] h1,html[lang="zh"] .pnode .t,html[lang="zh"] .node.root .t,html[lang="zh"] .node.theme > button,html[lang="zh"] .rb .card .t{font-family:"Noto Sans SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",var(--sans)}
+html[lang="zh"] h1,html[lang="zh"] .pnode .t,html[lang="zh"] .node.root .t,html[lang="zh"] .node.group > button,html[lang="zh"] .node.theme > button,html[lang="zh"] .rb .card .t{font-family:"Noto Sans SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",var(--sans)}
 html[lang="zh"] .node.leaf{min-width:240px;max-width:380px}
-@media (prefers-reduced-motion:reduce){.savebar,.node.theme > button::after{transition:none}}
+@media (prefers-reduced-motion:reduce){.savebar,.node.group > button::after,.node.theme > button::after{transition:none}}
 @media (max-width:760px){
   .spine{grid-template-columns:repeat(2,1fr)}
   .spine::before{display:none}
   .node.root{min-width:160px}
+  .node.group{min-width:140px}
   .node.theme{min-width:150px}
   .node.leaf{min-width:180px;max-width:260px}
   .kids{margin-left:20px}
@@ -216,6 +220,11 @@ const THEMES=[
  {id:"leading",name:"Leading",namezh:"领导"},{id:"culture",name:"Culture",namezh:"文化"},{id:"team",name:"Team",namezh:"团队"},{id:"strategy",name:"Strategy",namezh:"战略"},
  {id:"decisions",name:"Deciding",namezh:"决策"},{id:"crisis",name:"Crisis",namezh:"危机"},{id:"craft",name:"CEO craft",namezh:"CEO 功课"},
  {id:"comms",name:"Communicating",namezh:"沟通"},{id:"self",name:"Yourself",namezh:"自己"},{id:"exits",name:"Exits",namezh:"退出"},{id:"planning",name:"Planning",namezh:"规划"},{id:"stepping",name:"Stepping away",namezh:"交棒"}
+];
+const GROUPS=[
+ {id:"attitude",name:"Attitude",namezh:"态度",themes:["leading","self","culture","crisis"]},
+ {id:"strategy",name:"Strategy",namezh:"战略",themes:["strategy","planning","exits","stepping"]},
+ {id:"execution",name:"Execution",namezh:"执行",themes:["team","decisions","craft","comms"]}
 ];
 const L=[
  {s:"leading",n:"Perspiration vs inspiration",nzh:"流汗 vs 鼓舞",p:"Startup CEO: 90% perspiration, 10% inspiration. Scaleup CEO: the reverse. What worked in startup mode won't carry over — you have to evolve.",pzh:"创业 CEO：90% 流汗，10% 鼓舞。规模化 CEO：反过来。创业期奏效的做法带不过去——你必须进化。",ph:3},
@@ -316,7 +325,7 @@ const UI={
   en:{
     title:"Scaleup CEO Playbook",
     eyebrow:"Master memory · Founder → scaleup CEO",
-    lede:`Brian Halligan's 68 <b>Halliganisms</b> — from his essay <a href="https://www.linkedin.com/pulse/startup-founder-scaleup-ceos-journey-from-0-25billion-brian-halligan-e1f4e/" target="_blank" rel="noopener">A Startup Founder to Scaleup CEO's Journey from $0 to $25 billion</a> — as a progressive tree. Pick a phase on the path, open a theme, open a lesson. Mark a lesson ✓ once it's part of how we run; add a note if there's something to remember.`,
+    lede:`Brian Halligan's 68 <b>Halliganisms</b> — from his essay <a href="https://www.linkedin.com/pulse/startup-founder-scaleup-ceos-journey-from-0-25billion-brian-halligan-e1f4e/" target="_blank" rel="noopener">A Startup Founder to Scaleup CEO's Journey from $0 to $25 billion</a> — as a progressive tree. Pick a phase, open <b>Attitude / Strategy / Execution</b>, then a theme, then a lesson. Mark a lesson ✓ once it's part of how we run; add a note if there's something to remember.`,
     at:"We are at ", here:"We are here", expand:"Expand all", collapse:"Collapse",
     lessons:"lessons", how:"part of how we run", mark:"Mark as part of how we run", marked:"✓ Part of how we run",
     note:"Note for us…", local:"saved in this browser", never:"never", last:"last saved ",
@@ -330,7 +339,7 @@ const UI={
   zh:{
     title:"规模化 CEO 作战手册",
     eyebrow:"主记忆 · 创始人 → 规模化 CEO",
-    lede:`Brian Halligan 的 68 条 <b>Halliganisms</b>——出自长文 <a href="https://www.linkedin.com/pulse/startup-founder-scaleup-ceos-journey-from-0-25billion-brian-halligan-e1f4e/" target="_blank" rel="noopener">A Startup Founder to Scaleup CEO's Journey from $0 to $25 billion</a>——做成一棵递进树。在路径上选阶段，打开主题，打开原则。成为我们做事方式的一部分后打 ✓；有要记住的，写下笔记。`,
+    lede:`Brian Halligan 的 68 条 <b>Halliganisms</b>——出自长文 <a href="https://www.linkedin.com/pulse/startup-founder-scaleup-ceos-journey-from-0-25billion-brian-halligan-e1f4e/" target="_blank" rel="noopener">A Startup Founder to Scaleup CEO's Journey from $0 to $25 billion</a>——做成一棵递进树。先选阶段，再打开 <b>态度 / 战略 / 执行</b>，然后打开主题和原则。成为我们做事方式的一部分后打 ✓；有要记住的，写下笔记。`,
     at:"我们在 ", here:"我们在这里", expand:"全部展开", collapse:"收起",
     lessons:"条原则", how:"已成为做事方式", mark:"标为已成为做事方式", marked:"✓ 已成为做事方式",
     note:"给我们的笔记…", local:"保存在本浏览器", never:"尚未", last:"上次保存 ",
@@ -396,11 +405,21 @@ function renderTree(){
   const P=PHASES.find(p=>p.p===viewPhase);
   const items=L.filter(x=>x.ph===P.p);
   let kids="";
-  for(const T of THEMES){
-    const ti=items.filter(x=>x.s===T.id); if(!ti.length)continue;
-    const d=ti.filter(x=>get(x.id).done).length, key=P.p+":"+T.id;
-    kids+=`<div class="branch ${openThemes.has(key)?"open":""}" data-theme="${key}"><div class="node theme"><button data-act="theme"><span>${esc(tn(T,"name"))}</span><span class="c"><i>${d}✓</i> / ${ti.length}</span></button></div>
-      <div class="kids">${ti.map(leafHTML).join("")}</div></div>`;
+  for(const G of GROUPS){
+    const gItems=items.filter(x=>G.themes.includes(x.s));
+    if(!gItems.length) continue;
+    const gkey=P.p+":g:"+G.id;
+    const gd=gItems.filter(x=>get(x.id).done).length;
+    let themes="";
+    for(const tid of G.themes){
+      const T=THEMES.find(t=>t.id===tid);
+      const ti=gItems.filter(x=>x.s===tid); if(!ti.length) continue;
+      const d=ti.filter(x=>get(x.id).done).length, key=P.p+":"+T.id;
+      themes+=`<div class="branch ${openThemes.has(key)?"open":""}" data-theme="${key}"><div class="node theme"><button data-act="theme"><span>${esc(tn(T,"name"))}</span><span class="c"><i>${d}✓</i> / ${ti.length}</span></button></div>
+        <div class="kids">${ti.map(leafHTML).join("")}</div></div>`;
+    }
+    kids+=`<div class="branch ${openThemes.has(gkey)?"open":""}" data-theme="${gkey}"><div class="node group"><button data-act="theme"><span>${esc(tn(G,"name"))}</span><span class="c"><i>${gd}✓</i> / ${gItems.length}</span></button></div>
+      <div class="kids">${themes}</div></div>`;
   }
   const tree=$("#tree"); tree.dataset.p=P.p;
   tree.innerHTML=`<div class="branch open"><div class="node root"><div class="t">P${P.p} · ${esc(tn(P,"name"))}</div><div class="s">${esc(tn(P,"size"))} · ${items.length} ${esc(u("lessons"))}</div><div class="d">${esc(tn(P,"desc"))}</div><div class="trig">${esc(tn(P,"trig"))}</div></div><div class="kids">${kids}</div></div>`;
@@ -416,7 +435,7 @@ function renderProgress(){
 // ---------- interaction ----------
 $("#spine").addEventListener("click",e=>{const b=e.target.closest(".pnode");if(!b)return;viewPhase=+b.dataset.p;render()});
 $("#phaseSel").addEventListener("change",e=>{state.phase=+e.target.value;viewPhase=state.phase;markDirty("phase");render()});
-$("#expandAll").addEventListener("click",()=>{L.filter(x=>x.ph===viewPhase).forEach(x=>openThemes.add(viewPhase+":"+x.s));renderTree()});
+$("#expandAll").addEventListener("click",()=>{GROUPS.forEach(g=>openThemes.add(viewPhase+":g:"+g.id));L.filter(x=>x.ph===viewPhase).forEach(x=>openThemes.add(viewPhase+":"+x.s));renderTree()});
 $("#collapseAll").addEventListener("click",()=>{[...openThemes].filter(k=>k.startsWith(viewPhase+":")).forEach(k=>openThemes.delete(k));openLeaves.clear();renderTree()});
 $("#tree").addEventListener("click",e=>{
   const b=e.target.closest("[data-act]");if(!b)return;
@@ -473,8 +492,6 @@ async function save(){
 }
 let toastT; function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{t.hidden=true},4000)}
 
-// open the first theme so the tree isn't bare
-(function(){const first=L.find(x=>x.ph===viewPhase);if(first)openThemes.add(viewPhase+":"+first.s)})();
 render();
 (async()=>{
   try{ if(window.claude&&typeof window.claude.use==="function") artifactNS=await window.claude.use("artifact"); }catch(e){artifactNS=null}
