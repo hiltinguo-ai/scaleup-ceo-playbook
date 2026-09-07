@@ -40,6 +40,12 @@ a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:2p
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.45;margin:0;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1280px;margin:0 auto;padding:24px 28px 110px}
 header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding-bottom:14px}
+.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex:none}
+.hdr-right .lang{display:inline-flex}
+.hdr-right .lang button{font:inherit;font-size:13px;padding:5px 12px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.hdr-right .lang button:first-child{border-radius:3px 0 0 3px}
+.hdr-right .lang button:last-child{border-radius:0 3px 3px 0;margin-left:-1px}
+.hdr-right .lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
 h1{font-family:var(--cond);font-weight:700;font-size:32px;line-height:1.05;margin:4px 0 6px;letter-spacing:-.01em}
 .lede{color:var(--ink-2);max-width:62ch;margin:0}
@@ -59,7 +65,7 @@ h1{font-family:var(--cond);font-weight:700;font-size:32px;line-height:1.05;margi
 .pnode[aria-pressed="true"] .t{text-decoration:underline;text-underline-offset:4px}
 .pnode .here{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;background:var(--here);color:#1a1200;padding:1px 6px;border-radius:2px;margin-top:4px}
 .pnode:not([data-here]) .here{visibility:hidden}
-.spinectl{display:flex;justify-content:center;gap:14px;align-items:center;font-size:12.5px;color:var(--ink-2);margin-bottom:10px}
+.spinectl{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;align-items:center;font-size:12.5px;color:var(--ink-2);margin-bottom:10px}
 .modenote{text-align:center;font-family:var(--mono);font-size:11px;color:var(--ink-3);margin:-4px 0 10px}
 .modenote[hidden]{display:none}
 .spinectl select,.spinectl button{font:inherit;font-size:12.5px;padding:4px 8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:3px;cursor:pointer}
@@ -136,11 +142,6 @@ footer{margin-top:20px;padding-top:12px;border-top:1px solid var(--line);color:v
 html[lang="zh"]{font-size:15px}
 html[lang="zh"] h1,html[lang="zh"] .pnode .t,html[lang="zh"] .node.root .t,html[lang="zh"] .node.theme > button,html[lang="zh"] .rb .card .t{font-family:"Noto Sans SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",var(--sans)}
 html[lang="zh"] .node.leaf{min-width:240px;max-width:380px}
-.spinectl .lang{display:inline-flex;gap:0}
-.spinectl .lang button{border-radius:0}
-.spinectl .lang button:first-child{border-radius:3px 0 0 3px}
-.spinectl .lang button:last-child{border-radius:0 3px 3px 0;margin-left:-1px}
-.spinectl .lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 @media (prefers-reduced-motion:reduce){.savebar,.node.theme > button::after{transition:none}}
 @media (max-width:760px){
   .spine{grid-template-columns:repeat(2,1fr)}
@@ -165,7 +166,13 @@ html[lang="zh"] .node.leaf{min-width:240px;max-width:380px}
       <h1 id="htitle"></h1>
       <p class="lede" id="lede"></p>
     </div>
-    <div class="progress" id="progress"></div>
+    <div class="hdr-right">
+      <span class="lang" role="group" aria-label="Language">
+        <button type="button" id="langEn" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" id="langZh" data-lang="zh" aria-pressed="false">中文</button>
+      </span>
+      <div class="progress" id="progress"></div>
+    </div>
   </header>
 
   <div class="spine" id="spine"></div>
@@ -173,10 +180,6 @@ html[lang="zh"] .node.leaf{min-width:240px;max-width:380px}
     <label id="phaseLab">We are at <select id="phaseSel"></select></label>
     <button id="expandAll">Expand all</button>
     <button id="collapseAll">Collapse</button>
-    <span class="lang" role="group" aria-label="Language">
-      <button type="button" id="langEn" data-lang="en" aria-pressed="true">EN</button>
-      <button type="button" id="langZh" data-lang="zh" aria-pressed="false">中文</button>
-    </span>
   </div>
   <div class="modenote" id="modeNote" hidden></div>
 
